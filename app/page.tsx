@@ -343,9 +343,9 @@ export default function HomePage() {
             <div className="w-24 h-2 bg-accent-400 mx-auto mt-6"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-children">
+          <div className="flex flex-wrap justify-center gap-8 stagger-children">
             {services.map((service) => (
-              <Link key={service.id} href={`/reservar?service=${service.id}`} className="solid-card block p-6 sm:p-8 relative group cursor-pointer bg-[var(--color-surface)]">
+              <Link key={service.id} href={`/reservar?service=${service.id}`} className="solid-card w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.4rem)] max-w-[400px] block p-6 sm:p-8 relative group cursor-pointer bg-[var(--color-surface)]">
                 <div className="flex items-start gap-4">
                   <img src={service.image || '/icons/corte.jpg'} alt={service.name} className="w-16 h-16 object-cover rounded-none  grayscale group-hover:grayscale-0 transition-all" />
                   <div className="flex-1">
@@ -374,9 +374,9 @@ export default function HomePage() {
               <div className="w-24 h-2 bg-accent-400 mx-auto mt-6"></div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="flex flex-wrap justify-center gap-6">
               {products.map((product) => (
-                <div key={product.id} className="solid-card bg-[var(--color-surface)] text-[var(--color-text-main)] flex flex-col relative group hover:-translate-y-2 transition-transform">
+                <div key={product.id} className="solid-card w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)] max-w-[320px] bg-[var(--color-surface)] text-[var(--color-text-main)] flex flex-col relative group hover:-translate-y-2 transition-transform">
                   {product.stock <= 0 && (
                     <div className="absolute top-4 right-4 bg-red-600 text-white text-xs font-black px-3 py-1 rounded-md uppercase z-20">Agotado</div>
                   )}
@@ -418,9 +418,9 @@ export default function HomePage() {
             <div className="w-24 h-2 bg-accent-400 mx-auto mt-6"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
+          <div className="flex flex-wrap justify-center gap-8">
             {barbers.map((barber) => (
-              <div key={barber.id} className="solid-card bg-[var(--color-surface)] group hover:-translate-y-2 active:-translate-y-2 border-2 border-transparent hover:border-accent-400 active:border-accent-400 hover:shadow-[0_0_15px_rgba(198,166,100,0.4)] active:shadow-[0_0_15px_rgba(198,166,100,0.4)] transition-all cursor-pointer" tabIndex={0}>
+              <div key={barber.id} className="solid-card w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.4rem)] max-w-[400px] bg-[var(--color-surface)] group hover:-translate-y-2 active:-translate-y-2 border-2 border-transparent hover:border-accent-400 active:border-accent-400 hover:shadow-[0_0_15px_rgba(198,166,100,0.4)] active:shadow-[0_0_15px_rgba(198,166,100,0.4)] transition-all cursor-pointer" tabIndex={0}>
                 <div className="aspect-square border-b border-[var(--color-border-subtle)] overflow-hidden relative rounded-t-xl">
                   <img src={barber.photo || 'https://i.pravatar.cc/400'} alt={barber.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-focus:grayscale-0 group-active:grayscale-0 transition-all duration-500" />
                   <div className="absolute inset-0 bg-green-900/20 group-hover:bg-transparent group-focus:bg-transparent group-active:bg-transparent transition-colors"></div>
@@ -444,9 +444,9 @@ export default function HomePage() {
               <div className="w-24 h-2 bg-accent-400 mx-auto mt-6"></div>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="flex flex-wrap justify-center gap-4">
               {gallery.map((img) => (
-                <div key={img.id} onClick={() => setLightboxImg(img.url)} className="gallery-solid aspect-square hover:border-accent-400 transition-colors cursor-pointer relative overflow-hidden group">
+                <div key={img.id} onClick={() => setLightboxImg(img.url)} className="gallery-solid w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.7rem)] lg:w-[calc(25%-0.75rem)] max-w-[300px] aspect-square hover:border-accent-400 transition-colors cursor-pointer relative overflow-hidden group">
                   <img src={img.url} alt="Galería" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all group-hover:scale-110" />
                 </div>
               ))}
