@@ -76,7 +76,7 @@ export default function PerfilPage() {
   if (status === 'loading') {
     return (
       <div className="min-h-screen bg-[var(--color-green-950)] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-gold-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-accent-400 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -85,8 +85,8 @@ export default function PerfilPage() {
     return (
       <div className="min-h-screen bg-[var(--color-green-950)] flex items-center justify-center px-4">
         <div className="text-center max-w-md animate-fade-in-up">
-          <div className="w-20 h-20 rounded-full bg-gold-500/10 flex items-center justify-center mx-auto mb-6">
-            <svg className="w-10 h-10 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-20 h-20 rounded-full bg-accent-400/10 flex items-center justify-center mx-auto mb-6">
+            <svg className="w-10 h-10 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
@@ -94,7 +94,7 @@ export default function PerfilPage() {
           <p className="text-[var(--color-ivory-300)] opacity-80 mb-8">Iniciá sesión con Google para ver tu historial de visitas, turnos y recompensas.</p>
           <button
             onClick={() => signIn('google')}
-            className="btn-gold text-dark-950 px-8 py-3.5 rounded-full text-sm font-bold tracking-wider uppercase flex items-center gap-2 mx-auto"
+            className="bg-accent-400 text-[var(--color-green-950)] hover:bg-accent-600 transition-colors text-dark-950 px-8 py-3.5 rounded-full text-sm font-bold tracking-wider uppercase flex items-center gap-2 mx-auto"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -128,7 +128,7 @@ export default function PerfilPage() {
         <div className="max-w-3xl mx-auto px-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <img src="/images/logo.jpg" alt="Vascoco" className="h-8 w-auto rounded-full" />
-            <span className="text-xl font-heading font-bold text-gold-gradient hidden sm:block">VASCOCO</span>
+            <span className="text-xl font-heading font-bold text-text-accent-400 hidden sm:block">VASCOCO</span>
           </Link>
           <button onClick={() => signOut({ callbackUrl: '/' })}
             className="text-[var(--color-ivory-300)] opacity-80 hover:text-white transition-colors text-sm">
@@ -141,25 +141,25 @@ export default function PerfilPage() {
         {/* Profile card */}
         <div className="glass rounded-2xl p-6 flex items-center gap-5 animate-fade-in-up">
           {session.user?.image ? (
-            <img src={session.user.image} alt={session.user.name || ''} className="w-16 h-16 rounded-full border-2 border-gold-500/30" />
+            <img src={session.user.image} alt={session.user.name || ''} className="w-16 h-16 rounded-full border-2 border-accent-400/30" />
           ) : (
-            <div className="w-16 h-16 rounded-full bg-gold-500/20 flex items-center justify-center text-2xl text-gold-400">
+            <div className="w-16 h-16 rounded-full bg-accent-400/20 flex items-center justify-center text-2xl text-accent-400">
               {session.user?.name?.[0] || '?'}
             </div>
           )}
           <div>
             <h1 className="text-2xl font-heading font-bold text-white">{session.user?.name}</h1>
             <p className="text-[var(--color-ivory-300)] opacity-80 text-sm">{session.user?.email}</p>
-            <p className="text-gold-400 text-sm mt-1 font-medium">{visitCount} visita{visitCount !== 1 ? 's' : ''} en total</p>
+            <p className="text-accent-400 text-sm mt-1 font-medium">{visitCount} visita{visitCount !== 1 ? 's' : ''} en total</p>
           </div>
         </div>
 
         {/* Reward card */}
         {hasReward ? (
-          <div className="glass rounded-2xl p-6 border border-gold-500/40 glow-gold animate-fade-in-up">
+          <div className="glass rounded-2xl p-6 border border-accent-400/40 glow-accent animate-fade-in-up">
             <div className="flex items-center gap-3 mb-3">
               <span className="text-3xl">🏆</span>
-              <h2 className="text-xl font-heading font-bold text-gold-400">¡Recompensa Disponible!</h2>
+              <h2 className="text-xl font-heading font-bold text-accent-400">¡Recompensa Disponible!</h2>
             </div>
             <p className="text-white">{profileData?.loyaltyMessage}</p>
           </div>
@@ -180,9 +180,9 @@ export default function PerfilPage() {
         )}
 
         {/* Appointments List */}
-        <div className="solid-card rounded-lg overflow-hidden animate-fade-in-up">
+        <div className="glass rounded-lg overflow-hidden animate-fade-in-up">
           <div className="px-6 py-4 border-b border-[var(--color-border-subtle)] bg-accent-400/5">
-            <h2 className="text-lg font-heading font-semibold text-[var(--color-text-main)]">Tus Turnos</h2>
+            <h2 className="text-lg font-heading font-semibold text-[var(--color-ivory-200)]">Tus Turnos</h2>
           </div>
           {loading ? (
             <div className="p-8 text-center text-[var(--color-ivory-300)] opacity-80">Cargando...</div>
@@ -194,7 +194,7 @@ export default function PerfilPage() {
           ) : (
             <div className="divide-y divide-[var(--color-border-subtle)]">
               {(profileData?.appointments || []).map(appt => (
-                <div key={appt.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4 hover:bg-[var(--color-bg-main)] transition-colors">
+                <div key={appt.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4 hover:bg-[var(--color-green-900)] transition-colors">
                   <div className="flex-1">
                     <p className="text-white font-medium text-lg">{appt.service.name}</p>
                     <p className="text-[var(--color-ivory-300)] opacity-80 text-sm">{formatDate(appt.date)} a las {appt.startTime} hs</p>
@@ -205,7 +205,7 @@ export default function PerfilPage() {
                       appt.status === 'confirmed' ? 'bg-accent-400/20 text-accent-400 border border-accent-400/30' :
                       appt.status === 'completed' ? 'bg-green-500/10 text-green-500 border border-green-500/30' :
                       appt.status === 'cancelled' ? 'bg-red-500/10 text-red-500 border border-red-500/30' :
-                      'bg-[var(--color-border-subtle)] text-[var(--color-text-main)]'
+                      'bg-[var(--color-border-subtle)] text-[var(--color-ivory-200)]'
                     }`}>
                       {appt.status === 'confirmed' ? 'Pendiente' : appt.status === 'completed' ? 'Completado' : appt.status === 'cancelled' ? 'Cancelado' : appt.status}
                     </span>
