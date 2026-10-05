@@ -7,18 +7,18 @@ export const metadata = {
 
 export default function TerminosPage() {
   return (
-    <div className="min-h-screen bg-[var(--color-green-950)] text-[var(--color-ivory-200)]">
-      <nav className="glass py-4 border-b border-[var(--color-border-subtle)]">
+    <div className="min-h-screen bg-dark-950">
+      <nav className="glass py-4 border-b border-[var(--color-border-subtle)]/50">
         <div className="max-w-4xl mx-auto px-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <img src="/images/logo.jpg" alt="Vascoco" className="h-8 w-auto rounded-full" />
-            <span className="text-xl font-heading font-bold text-gold-gradient">VASCOCO</span>
+            <span className="text-xl font-heading font-bold text-gold-gradient">HAIRBONA</span>
           </Link>
           <Link href="/" className="text-[var(--color-ivory-300)] opacity-80 hover:text-white transition-colors text-sm">← Volver</Link>
         </div>
       </nav>
 
-      <div className="max-w-4xl mx-auto px-4 py-12 text-[var(--color-ivory-200)] space-y-8">
+      <div className="max-w-4xl mx-auto px-4 py-12 text-dark-300 space-y-8">
         <div>
           <span className="text-accent-400 text-sm font-semibold tracking-widest uppercase">Legal</span>
           <h1 className="text-4xl font-heading font-bold text-white mt-2">Términos y Condiciones</h1>
