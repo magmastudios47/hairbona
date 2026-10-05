@@ -270,12 +270,6 @@ export default function HomePage() {
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-start pt-20">
           
           <div className="max-w-2xl text-left stagger-children">
-            {/* Small eyebrow text */}
-            <div className="flex items-center gap-3 mb-6">
-              <span className="h-[1px] w-12 bg-accent-400"></span>
-              <span className="text-accent-400 font-bold uppercase tracking-[0.2em] text-sm">Barbería Exclusiva</span>
-            </div>
-            
             {/* Main Title */}
             <h1 className="text-7xl sm:text-8xl md:text-9xl font-heading font-bold text-[var(--color-ivory-200)] leading-[0.85] mb-6 uppercase tracking-tighter drop-shadow-2xl">
               Vas<span className="text-accent-400">co</span>co
