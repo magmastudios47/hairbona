@@ -12,7 +12,7 @@ export default function TerminosPage() {
         <div className="max-w-4xl mx-auto px-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <img src="/images/logo.jpg" alt="Vascoco" className="h-8 w-auto rounded-full" />
-            <span className="text-xl font-heading font-bold text-gold-gradient">HAIRBONA</span>
+            <span className="text-xl font-heading font-bold text-gold-gradient">VASCOCO</span>
           </Link>
           <Link href="/" className="text-[var(--color-ivory-300)] opacity-80 hover:text-white transition-colors text-sm">← Volver</Link>
         </div>

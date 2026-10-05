@@ -91,7 +91,7 @@ export default function PerfilPage() {
             </svg>
           </div>
           <h1 className="text-3xl font-heading font-bold text-white mb-3">Mi Perfil</h1>
-          <p className="text-dark-400 mb-8">Iniciá sesión con Google para ver tu historial de visitas, turnos y recompensas.</p>
+          <p className="text-[var(--color-ivory-300)] opacity-80 mb-8">Iniciá sesión con Google para ver tu historial de visitas, turnos y recompensas.</p>
           <button
             onClick={() => signIn('google')}
             className="btn-gold text-dark-950 px-8 py-3.5 rounded-full text-sm font-bold tracking-wider uppercase flex items-center gap-2 mx-auto"
@@ -104,7 +104,7 @@ export default function PerfilPage() {
             </svg>
             Iniciar sesión con Google
           </button>
-          <Link href="/" className="block mt-4 text-dark-500 hover:text-white transition-colors text-sm">
+          <Link href="/" className="block mt-4 text-[var(--color-ivory-300)] opacity-80 hover:text-white transition-colors text-sm">
             Volver al inicio
           </Link>
         </div>
@@ -118,8 +118,8 @@ export default function PerfilPage() {
   const progress = (visitsInCycle / loyaltyVisits) * 100;
   const hasReward = visitCount > 0 && visitsInCycle === 0;
   
-  const pendingAppointments = profileData?.appointments?.filter(a => a.status === 'confirmed') || [];
-  const pastAppointments = profileData?.appointments?.filter(a => a.status !== 'confirmed') || [];
+  
+  
 
   return (
     <div className="min-h-screen bg-[var(--color-green-950)]">
@@ -127,11 +127,11 @@ export default function PerfilPage() {
       <nav className="glass py-4 sticky top-0 z-50 border-b border-dark-800/50">
         <div className="max-w-3xl mx-auto px-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <img src="/images/logo.jpg" alt="Hairbona" className="h-8 w-auto rounded-full" />
-            <span className="text-xl font-heading font-bold text-gold-gradient hidden sm:block">HAIRBONA</span>
+            <img src="/images/logo.jpg" alt="Vascoco" className="h-8 w-auto rounded-full" />
+            <span className="text-xl font-heading font-bold text-gold-gradient hidden sm:block">VASCOCO</span>
           </Link>
           <button onClick={() => signOut({ callbackUrl: '/' })}
-            className="text-dark-400 hover:text-white transition-colors text-sm">
+            className="text-[var(--color-ivory-300)] opacity-80 hover:text-white transition-colors text-sm">
             Cerrar sesión
           </button>
         </div>
@@ -149,7 +149,7 @@ export default function PerfilPage() {
           )}
           <div>
             <h1 className="text-2xl font-heading font-bold text-white">{session.user?.name}</h1>
-            <p className="text-dark-400 text-sm">{session.user?.email}</p>
+            <p className="text-[var(--color-ivory-300)] opacity-80 text-sm">{session.user?.email}</p>
             <p className="text-gold-400 text-sm mt-1 font-medium">{visitCount} visita{visitCount !== 1 ? 's' : ''} en total</p>
           </div>
         </div>
@@ -167,71 +167,54 @@ export default function PerfilPage() {
           <div className="glass rounded-2xl p-6 animate-fade-in-up">
             <div className="flex justify-between items-center mb-3">
               <h2 className="text-lg font-heading font-semibold text-white">Programa de fidelidad</h2>
-              <span className="text-dark-400 text-sm">{visitsInCycle}/{loyaltyVisits} visitas</span>
+              <span className="text-[var(--color-ivory-300)] opacity-80 text-sm">{visitsInCycle}/{loyaltyVisits} visitas</span>
             </div>
             <div className="w-full bg-dark-800 rounded-full h-3 overflow-hidden">
               <div className="h-3 rounded-full bg-gradient-to-r from-accent-600 to-accent-400 transition-all duration-700"
                 style={{ width: `${progress}%` }} />
             </div>
-            <p className="text-dark-500 text-sm mt-2">
+            <p className="text-[var(--color-ivory-300)] opacity-80 text-sm mt-2">
               {loyaltyVisits - visitsInCycle} visita{(loyaltyVisits - visitsInCycle) !== 1 ? 's' : ''} más para tu próxima recompensa
             </p>
           </div>
         )}
 
-        {/* Pending Appointments */}
-        {pendingAppointments.length > 0 && (
-          <div className="glass rounded-2xl overflow-hidden animate-fade-in-up">
-            <div className="px-6 py-4 border-b border-dark-800 bg-gold-500/10">
-              <h2 className="text-lg font-heading font-semibold text-white">Turnos Pendientes</h2>
-            </div>
-            <div className="divide-y divide-dark-800">
-              {pendingAppointments.map(appt => (
-                <div key={appt.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4">
-                  <div className="flex-1">
-                    <p className="text-white font-medium text-lg">{appt.service.name}</p>
-                    <p className="text-gold-400 text-sm font-semibold">{formatDate(appt.date)} a las {appt.startTime} hs</p>
-                    <p className="text-dark-500 text-sm mt-1">Con {appt.barber.name}</p>
-                  </div>
-                  <button onClick={() => handleCancelAppointment(appt.id)}
-                    className="text-red-400 hover:text-red-300 transition-colors text-sm font-medium border border-red-500/30 rounded-lg px-4 py-2 hover:bg-red-500/10 self-start sm:self-center">
-                    Cancelar Turno
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Past Appointments (History) */}
-        <div className="glass rounded-2xl overflow-hidden animate-fade-in-up">
-          <div className="px-6 py-4 border-b border-dark-800">
-            <h2 className="text-lg font-heading font-semibold text-white">Historial de Turnos</h2>
+        {/* Appointments List */}
+        <div className="solid-card rounded-lg overflow-hidden animate-fade-in-up">
+          <div className="px-6 py-4 border-b border-[var(--color-border-subtle)] bg-accent-400/5">
+            <h2 className="text-lg font-heading font-semibold text-[var(--color-text-main)]">Tus Turnos</h2>
           </div>
           {loading ? (
-            <div className="p-8 text-center text-dark-500">Cargando...</div>
-          ) : pastAppointments.length === 0 ? (
-            <div className="p-8 text-center text-dark-500">
-              <p>Aún no tenés historial de turnos.</p>
-              <Link href="/reservar" className="text-gold-400 hover:underline mt-2 inline-block">Reservar un turno →</Link>
+            <div className="p-8 text-center text-[var(--color-ivory-300)] opacity-80">Cargando...</div>
+          ) : profileData?.appointments?.length === 0 ? (
+            <div className="p-8 text-center text-[var(--color-ivory-300)] opacity-80">
+              <p>Aún no tenés turnos registrados.</p>
+              <Link href="/reservar" className="text-accent-600 font-medium hover:underline mt-2 inline-block">Reservar un turno →</Link>
             </div>
           ) : (
-            <div className="divide-y divide-dark-800">
-              {pastAppointments.map(appt => (
-                <div key={appt.id} className="flex items-center justify-between gap-4 px-6 py-4">
+            <div className="divide-y divide-[var(--color-border-subtle)]">
+              {(profileData?.appointments || []).map(appt => (
+                <div key={appt.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4 hover:bg-[var(--color-bg-main)] transition-colors">
                   <div className="flex-1">
-                    <p className="text-white font-medium">{appt.service.name}</p>
-                    <p className="text-dark-400 text-sm">{formatDate(appt.date)} · {appt.startTime} hs</p>
-                    <p className="text-dark-500 text-sm">Con {appt.barber.name}</p>
+                    <p className="text-white font-medium text-lg">{appt.service.name}</p>
+                    <p className="text-[var(--color-ivory-300)] opacity-80 text-sm">{formatDate(appt.date)} a las {appt.startTime} hs</p>
+                    <p className="text-[var(--color-ivory-300)] opacity-80 text-sm">Con {appt.barber.name}</p>
                   </div>
-                  <div>
-                    <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                      appt.status === 'completed' ? 'bg-green-500/10 text-green-400' :
-                      appt.status === 'cancelled' ? 'bg-red-500/10 text-red-400' :
-                      'bg-dark-700 text-dark-300'
+                  <div className="flex items-center gap-3 self-start sm:self-center">
+                    <span className={`text-xs px-3 py-1.5 rounded-lg font-bold uppercase tracking-wider ${
+                      appt.status === 'confirmed' ? 'bg-accent-400/20 text-accent-400 border border-accent-400/30' :
+                      appt.status === 'completed' ? 'bg-green-500/10 text-green-500 border border-green-500/30' :
+                      appt.status === 'cancelled' ? 'bg-red-500/10 text-red-500 border border-red-500/30' :
+                      'bg-[var(--color-border-subtle)] text-[var(--color-text-main)]'
                     }`}>
-                      {appt.status === 'completed' ? 'Completado' : appt.status === 'cancelled' ? 'Cancelado' : appt.status}
+                      {appt.status === 'confirmed' ? 'Pendiente' : appt.status === 'completed' ? 'Completado' : appt.status === 'cancelled' ? 'Cancelado' : appt.status}
                     </span>
+                    {appt.status === 'confirmed' && (
+                      <button onClick={() => handleCancelAppointment(appt.id)}
+                        className="text-red-500 hover:text-red-400 transition-colors text-xs font-bold uppercase tracking-wider border border-red-500/30 rounded-lg px-3 py-1.5 hover:bg-red-500/10">
+                        Cancelar
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
