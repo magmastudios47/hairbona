@@ -412,20 +412,22 @@ export default function HomePage() {
       <section id="nosotros" className="py-20 bg-[var(--color-surface)] ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-6xl font-heading font-bold uppercase tracking-tighter text-[var(--color-green-900)]">El Equipo</h2>
+            <h2 className="text-4xl sm:text-6xl font-heading font-bold uppercase tracking-tighter text-[var(--color-green-900)]">
+              {barbers.length === 1 ? 'El Especialista' : 'El Equipo'}
+            </h2>
             <div className="w-24 h-2 bg-accent-400 mx-auto mt-6"></div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
             {barbers.map((barber) => (
-              <div key={barber.id} className="solid-card bg-[var(--color-surface)] group hover:-translate-y-2">
+              <div key={barber.id} className="solid-card bg-[var(--color-surface)] group hover:-translate-y-2 active:-translate-y-2 border-2 border-transparent hover:border-accent-400 active:border-accent-400 hover:shadow-[0_0_15px_rgba(198,166,100,0.4)] active:shadow-[0_0_15px_rgba(198,166,100,0.4)] transition-all cursor-pointer" tabIndex={0}>
                 <div className="aspect-square border-b border-[var(--color-border-subtle)] overflow-hidden relative rounded-t-xl">
-                  <img src={barber.photo || 'https://i.pravatar.cc/400'} alt={barber.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
-                  <div className="absolute inset-0 bg-green-900/20 group-hover:bg-transparent transition-colors"></div>
+                  <img src={barber.photo || 'https://i.pravatar.cc/400'} alt={barber.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-focus:grayscale-0 group-active:grayscale-0 transition-all duration-500" />
+                  <div className="absolute inset-0 bg-green-900/20 group-hover:bg-transparent group-focus:bg-transparent group-active:bg-transparent transition-colors"></div>
                 </div>
                 <div className="p-6 text-center">
                   <h3 className="text-2xl font-black uppercase tracking-wide text-[var(--color-text-main)]">{barber.name}</h3>
-                  <p className="text-accent-600 font-bold text-sm uppercase mt-1">Barbero Profesional</p>
+                  <p className="text-accent-600 font-bold text-sm uppercase mt-1 px-4">{barber.description || 'Barbero Profesional'}</p>
                 </div>
               </div>
             ))}
