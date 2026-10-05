@@ -2,7 +2,7 @@ import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 
 const SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'hairbona-super-secret-key-change-in-production'
+  process.env.JWT_SECRET || 'vascoco-super-secret-key-change-in-production'
 );
 
 export async function createToken(userId: string, username: string) {

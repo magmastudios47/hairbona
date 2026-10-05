@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
 import { NextRequest, NextResponse } from 'next/server';
+import { sendCustomerEmail } from '@/lib/email';
+import { cancellationEmail } from '@/lib/email-templates';
 
 export async function PATCH(
   request: NextRequest,
@@ -25,6 +27,25 @@ export async function PATCH(
       data: { status },
       include: { service: true, barber: true },
     });
+
+    if (status === 'cancelled') {
+      if (appointment.customerEmail) {
+        const emailData = {
+          appointmentId: appointment.id,
+          customerName: appointment.customerName,
+          date: appointment.date,
+          startTime: appointment.startTime,
+          endTime: appointment.endTime,
+          serviceName: appointment.service.name,
+          duration: appointment.service.duration,
+          price: appointment.price,
+          barberName: appointment.barber.name,
+          barberPhoto: appointment.barber.photo,
+        } as any;
+        const { subject, html } = cancellationEmail(emailData, false);
+        await sendCustomerEmail(appointment.customerEmail, subject, html);
+      }
+    }
 
     // Auto-register visit when completing an appointment
     if (status === 'completed') {

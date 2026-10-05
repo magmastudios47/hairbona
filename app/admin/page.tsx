@@ -121,26 +121,26 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => changeDate(-7)}
-              className="w-9 h-9 rounded-lg glass flex items-center justify-center text-dark-400 hover:text-white transition-colors"
+              className="w-9 h-9 rounded-lg solid-card flex items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
             <div>
-              <h1 className="text-xl sm:text-2xl font-heading font-bold text-white">
+              <h1 className="text-xl sm:text-2xl font-heading font-bold text-[var(--color-text-main)]">
                 Turnos desde: {formatDisplayDate(selectedDate)}
               </h1>
               <button
                 onClick={() => setSelectedDate(new Date().toISOString().split('T')[0])}
-                className="text-gold-500 text-xs hover:text-gold-400 transition-colors"
+                className="text-accent-500 text-xs hover:text-accent-400 transition-colors"
               >
                 Ir a hoy
               </button>
             </div>
             <button
               onClick={() => changeDate(7)}
-              className="w-9 h-9 rounded-lg glass flex items-center justify-center text-dark-400 hover:text-white transition-colors"
+              className="w-9 h-9 rounded-lg solid-card flex items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -151,28 +151,28 @@ export default function AdminDashboard() {
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3 mb-8">
-          <div className="glass rounded-xl p-4 text-center">
+          <div className="solid-card rounded-lg p-4 text-center">
             <p className="text-2xl font-bold text-blue-400">{confirmedCount}</p>
-            <p className="text-dark-500 text-xs mt-1">Pendientes</p>
+            <p className="text-[var(--color-text-muted)] text-xs mt-1">Pendientes</p>
           </div>
-          <div className="glass rounded-xl p-4 text-center">
+          <div className="solid-card rounded-lg p-4 text-center">
             <p className="text-2xl font-bold text-green-400">{completedCount}</p>
-            <p className="text-dark-500 text-xs mt-1">Completados</p>
+            <p className="text-[var(--color-text-muted)] text-xs mt-1">Completados</p>
           </div>
-          <div className="glass rounded-xl p-4 text-center">
+          <div className="solid-card rounded-lg p-4 text-center">
             <p className="text-2xl font-bold text-red-400">{cancelledCount}</p>
-            <p className="text-dark-500 text-xs mt-1">Cancelados</p>
+            <p className="text-[var(--color-text-muted)] text-xs mt-1">Cancelados</p>
           </div>
         </div>
 
         {/* Appointments list */}
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-2 border-gold-500/30 border-t-gold-500 rounded-full animate-spin"></div>
+            <div className="w-8 h-8 border-2 border-accent-500/30 border-t-accent-400 rounded-lg animate-spin"></div>
           </div>
         ) : appointments.length === 0 ? (
-          <div className="glass rounded-2xl p-12 text-center">
-            <svg className="w-12 h-12 text-dark-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="solid-card rounded-lg p-12 text-center">
+            <svg className="w-12 h-12 text-[var(--color-text-muted)] mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -180,54 +180,54 @@ export default function AdminDashboard() {
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
               />
             </svg>
-            <p className="text-dark-400 text-lg font-medium">Sin turnos</p>
-            <p className="text-dark-500 text-sm mt-1">No hay turnos registrados para esta fecha.</p>
+            <p className="text-[var(--color-text-muted)] text-lg font-medium">Sin turnos</p>
+            <p className="text-[var(--color-text-muted)] text-sm mt-1">No hay turnos registrados para esta fecha.</p>
           </div>
         ) : (
           <div className="space-y-3">
             {appointments.map((apt) => (
               <div
                 key={apt.id}
-                className={`glass rounded-xl p-4 sm:p-5 transition-all duration-200 ${
+                className={`solid-card rounded-lg p-4 sm:p-5 transition-all duration-200 ${
                   apt.status === 'cancelled' ? 'opacity-50' : ''
                 }`}
               >
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                   {/* Time */}
                   <div className="flex items-center gap-3 sm:w-48 flex-shrink-0">
-                    <div className="flex flex-col items-center justify-center bg-gold-500/10 rounded-lg px-3 py-2 text-center border border-gold-500/20">
-                      <span className="text-gold-400 text-[10px] uppercase font-bold tracking-wider leading-none mb-1">
+                    <div className="flex flex-col items-center justify-center bg-accent-400/10 rounded-lg px-3 py-2 text-center border border-accent-500/20">
+                      <span className="text-accent-400 text-[10px] uppercase font-bold tracking-wider leading-none mb-1">
                         {(() => {
                           const [y, m, d] = apt.date.split('-');
                           return `${d}/${m}`;
                         })()}
                       </span>
-                      <span className="text-gold-400 text-sm font-bold leading-none">{apt.startTime}</span>
+                      <span className="text-accent-400 text-sm font-bold leading-none">{apt.startTime}</span>
                     </div>
                     <div className="sm:hidden">
-                      <p className="text-white font-semibold">{apt.customerName}</p>
-                      <p className="text-dark-500 text-xs">{apt.service.name}</p>
+                      <p className="text-[var(--color-text-main)] font-semibold">{apt.customerName}</p>
+                      <p className="text-[var(--color-text-muted)] text-xs">{apt.service.name}</p>
                     </div>
                   </div>
 
                   {/* Info */}
                   <div className="flex-1 hidden sm:block">
-                    <p className="text-white font-semibold">{apt.customerName}</p>
+                    <p className="text-[var(--color-text-main)] font-semibold">{apt.customerName}</p>
                     <div className="flex items-center gap-3 mt-0.5">
-                      <span className="text-dark-500 text-sm font-medium text-gold-400">Con {apt.barber?.name || 'Cualquiera'}</span>
-                      <span className="text-dark-600 text-sm">•</span>
-                      <span className="text-dark-500 text-sm">{apt.service.name}</span>
-                      <span className="text-dark-600 text-sm">•</span>
-                      <span className="text-dark-500 text-sm">{apt.customerPhone}</span>
-                      <span className="text-dark-600 text-sm">•</span>
-                      <span className="text-dark-500 text-sm">
+                      <span className="text-[var(--color-text-muted)] text-sm font-medium text-accent-400">Con {apt.barber?.name || 'Cualquiera'}</span>
+                      <span className="text-[var(--color-text-muted)] text-sm">•</span>
+                      <span className="text-[var(--color-text-muted)] text-sm">{apt.service.name}</span>
+                      <span className="text-[var(--color-text-muted)] text-sm">•</span>
+                      <span className="text-[var(--color-text-muted)] text-sm">{apt.customerPhone}</span>
+                      <span className="text-[var(--color-text-muted)] text-sm">•</span>
+                      <span className="text-[var(--color-text-muted)] text-sm">
                         {apt.startTime} - {apt.endTime}
                       </span>
                     </div>
                   </div>
 
                   {/* Mobile info */}
-                  <div className="flex items-center gap-3 text-xs text-dark-500 sm:hidden ml-13">
+                  <div className="flex items-center gap-3 text-xs text-[var(--color-text-muted)] sm:hidden ml-13">
                     <span>{apt.customerPhone}</span>
                     <span>{apt.startTime} - {apt.endTime}</span>
                   </div>
@@ -235,7 +235,7 @@ export default function AdminDashboard() {
                   {/* Status & Actions */}
                   <div className="flex items-center gap-2 sm:flex-shrink-0">
                     <span
-                      className={`px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider border ${
+                      className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wider border ${
                         statusColors[apt.status]
                       }`}
                     >
@@ -267,7 +267,7 @@ export default function AdminDashboard() {
 
                     <button
                       onClick={() => deleteAppointment(apt.id)}
-                      className="w-8 h-8 rounded-lg bg-dark-800 flex items-center justify-center text-dark-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                      className="w-8 h-8 rounded-lg bg-[var(--color-surface)] hover:bg-[var(--color-bg-main)] flex items-center justify-center text-[var(--color-text-muted)] hover:text-red-400 hover:bg-red-500/10 transition-colors"
                       title="Eliminar"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

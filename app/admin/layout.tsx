@@ -25,12 +25,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   return (
-    <div className="min-h-screen bg-dark-950 flex flex-col">
-      <nav className="glass border-b border-dark-800/50 py-4">
+    <div className="admin-theme min-h-screen bg-[var(--color-bg-main)] text-[var(--color-text-main)] flex flex-col selection:bg-accent-400 selection:text-green-900">
+      <nav className="bg-[var(--color-surface)] border-b border-[var(--color-border-subtle)] py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <span className="text-xl font-heading font-bold text-gold-gradient">HAIRBONA</span>
-            <span className="text-dark-500 text-sm hidden sm:inline">Panel Admin</span>
+            <span className="text-xl font-heading font-bold heading-solid">VASCOCO</span>
+            <span className="text-[var(--color-text-muted)] text-sm hidden sm:inline">Panel Admin</span>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-6">
             {tabs.map(tab => (
@@ -38,7 +38,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 key={tab.path}
                 href={tab.path}
                 className={`text-sm font-medium px-3 py-1.5 rounded-lg transition-colors ${
-                  pathname === tab.path ? 'bg-gold-500/10 text-gold-400' : 'text-dark-400 hover:text-white'
+                  pathname === tab.path ? 'bg-accent-400/10 text-accent-400' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]'
                 }`}
               >
                 {tab.name}
@@ -46,7 +46,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             ))}
             <button
               onClick={handleLogout}
-              className="text-dark-400 hover:text-red-400 transition-colors text-sm flex items-center gap-1.5 ml-2"
+              className="text-[var(--color-text-muted)] hover:text-red-400 transition-colors text-sm flex items-center gap-1.5 ml-2"
             >
               Salir
             </button>

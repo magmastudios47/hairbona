@@ -54,9 +54,7 @@ interface CartItem {
   quantity: number;
 }
 
-
-const INSTAGRAM_URL = 'https://www.instagram.com/hairbona_fr?stkn=MTR4aHp6Zjg0bzdoMg==';
-
+const INSTAGRAM_URL = 'https://www.instagram.com/vascoco.be';
 export default function HomePage() {
   const { data: session } = useSession();
   const [services, setServices] = useState<Service[]>([]);
@@ -103,53 +101,43 @@ export default function HomePage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const heroImage = config['heroImage'] || '/images/hero_background.jpg';
-  const heroSubtitle = config['heroSubtitle'] || 'Tu barbería de confianza. Estilo, precisión y atención personalizada en cada visita.';
-  const whatsappNumber = config['whatsappNumber'] || '+5491100000000';
-
   const addToCart = (product: Product) => {
-    setCart(prev => {
-      const existing = prev.find(item => item.product.id === product.id);
+    setCart((prev) => {
+      const existing = prev.find((item) => item.product.id === product.id);
       if (existing) {
-        if (existing.quantity >= product.stock) {
-          alert('No hay más stock disponible de este producto.');
-          return prev;
-        }
-        return prev.map(item => item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
-      }
-      if (product.stock <= 0) {
-        alert('Este producto está agotado.');
-        return prev;
+        if (existing.quantity >= product.stock) return prev;
+        return prev.map((item) =>
+          item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
       }
       return [...prev, { product, quantity: 1 }];
     });
     setCartOpen(true);
   };
 
-  const updateCartQuantity = (productId: string, delta: number) => {
-    setCart(prev => prev.map(item => {
-      if (item.product.id === productId) {
-        const newQuantity = item.quantity + delta;
-        if (newQuantity <= 0) return null;
-        if (newQuantity > item.product.stock) return item;
-        return { ...item, quantity: newQuantity };
-      }
-      return item;
-    }).filter(Boolean) as CartItem[]);
+  const updateQuantity = (productId: string, delta: number) => {
+    setCart((prev) => {
+      return prev.map((item) => {
+        if (item.product.id === productId) {
+          const newQty = item.quantity + delta;
+          if (newQty <= 0) return null;
+          if (newQty > item.product.stock) return item;
+          return { ...item, quantity: newQty };
+        }
+        return item;
+      }).filter(Boolean) as CartItem[];
+    });
   };
 
-  const cartTotal = cart.reduce((acc, item) => acc + (item.product.price * item.quantity), 0);
-  const cartItemCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const cartTotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
 
-  const checkoutCart = () => {
-    if (cart.length === 0) return;
-    const text = `Hola buen día, me gustaría comprar lo siguiente:%0A%0A${cart.map(item => `- ${item.quantity}x ${item.product.name} ($${item.product.price})`).join('%0A')}%0A%0ATotal: $${cartTotal}`;
-    window.open(`https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${text}`, '_blank');
-  };
+  const checkoutMessage = `¡Hola Vascoco! Quiero encargar los siguientes productos:\n\n${cart
+    .map((item) => `- ${item.quantity}x ${item.product.name} ($${item.product.price * item.quantity})`)
+    .join('\n')}\n\nTotal: $${cartTotal}`;
 
-
-  const submitReview = async () => {
-    if (!reviewText.trim()) return;
+  const submitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!session) return alert('Debes iniciar sesión para reseñar');
     setSubmittingReview(true);
     try {
       const res = await fetch('/api/reviews', {
@@ -162,6 +150,7 @@ export default function HomePage() {
         setReviews([newReview, ...reviews]);
         setReviewText('');
         setReviewRating(5);
+        alert('¡Reseña publicada con éxito!');
       } else {
         const err = await res.json();
         alert(err.error || 'Error al enviar la reseña');
@@ -186,173 +175,196 @@ export default function HomePage() {
     }
   };
 
+  const heroSubtitle = config.heroSubtitle || "Tradición, estilo y excelencia para el hombre moderno.";
+  const fiveStarReviews = Array.isArray(reviews) ? reviews.filter((r) => r.rating === 5) : [];
+
   return (
-    <div className="min-h-screen bg-dark-950">
+    <div className="min-h-screen bg-[var(--color-bg-main)] text-[var(--color-text-main)] font-body selection:bg-green-900 selection:text-[var(--color-ivory-200)]">
       <WelcomeModal />
+
       {/* Navigation */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? 'glass py-2 shadow-lg shadow-black/30'
-            : 'bg-transparent py-3 sm:py-5'
-        }`}
-      >
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[var(--color-surface)] shadow-sm border-b border-[var(--color-border-subtle)] py-2' : 'bg-transparent py-4'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group">
-            <img src="/images/logo.jpg" alt="Hairbona Logo" className="h-16 w-16 sm:h-20 sm:w-20 object-contain rounded-full shadow-lg border-2 border-gold-500/50 group-hover:border-gold-400 transition-all group-hover:scale-105" />
+          <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="flex items-center group">
+            <img src="/images/logo.jpg" alt="Vascoco Logo" className="h-16 w-16 object-cover rounded-full shadow-md transition-all group-hover:-translate-y-1 group-hover:shadow-lg" />
           </a>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-6 lg:gap-8">
-            <a href="#servicios" className="text-dark-300 hover:text-gold-400 transition-colors text-sm font-medium tracking-wide uppercase">Servicios</a>
-            {products.length > 0 && (
-              <a href="#productos" className="text-dark-300 hover:text-gold-400 transition-colors text-sm font-medium tracking-wide uppercase">Productos</a>
-            )}
-            <a href="#nosotros" className="text-dark-300 hover:text-gold-400 transition-colors text-sm font-medium tracking-wide uppercase">Nosotros</a>
-            <a href="#galeria" className="text-dark-300 hover:text-gold-400 transition-colors text-sm font-medium tracking-wide uppercase">Galería</a>
-            <a href="#resenas" className="text-dark-300 hover:text-gold-400 transition-colors text-sm font-medium tracking-wide uppercase">Reseñas</a>
-            <a href="#ubicacion" className="text-dark-300 hover:text-gold-400 transition-colors text-sm font-medium tracking-wide uppercase">Ubicación</a>
-            <Link href="/reservar" className="btn-gold text-dark-950 px-6 py-2.5 rounded-full text-sm font-semibold tracking-wide uppercase">
-              Reservar Turno
+          <div className={`hidden md:flex items-center gap-6 font-bold text-sm uppercase tracking-wider transition-colors ${scrolled ? 'text-[var(--color-text-main)]' : 'text-[var(--color-ivory-200)]'}`}>
+            <a href="#servicios" className={`${scrolled ? 'hover:text-accent-600' : 'hover:text-accent-400'} transition-colors`}>Servicios</a>
+            {products.length > 0 && <a href="#productos" className={`${scrolled ? 'hover:text-accent-600' : 'hover:text-accent-400'} transition-colors`}>Productos</a>}
+            <a href="#nosotros" className={`${scrolled ? 'hover:text-accent-600' : 'hover:text-accent-400'} transition-colors`}>Nosotros</a>
+            <a href="#galeria" className={`${scrolled ? 'hover:text-accent-600' : 'hover:text-accent-400'} transition-colors`}>Galería</a>
+            <a href="#resenas" className={`${scrolled ? 'hover:text-accent-600' : 'hover:text-accent-400'} transition-colors`}>Reseñas</a>
+            <Link href="/reservar" className="btn-cta px-6 py-2 ml-4">
+              Reservar
             </Link>
             {session ? (
-              <Link href="/perfil" className="flex items-center gap-2 group ml-2">
+              <Link href="/perfil" className="ml-2 block">
                 {session.user?.image ? (
-                  <img src={session.user.image} alt={session.user.name || ''} className="w-10 h-10 rounded-full border border-gold-500/50 group-hover:border-gold-400 transition-colors" />
+                  <img src={session.user.image} alt={session.user.name || ''} className="w-10 h-10 rounded-full " />
                 ) : (
-                  <div className="w-10 h-10 rounded-full bg-gold-500/20 flex items-center justify-center text-gold-400 border border-gold-500/50 group-hover:border-gold-400 transition-colors">
+                  <div className="w-10 h-10 rounded-full bg-green-900 text-[var(--color-ivory-200)] flex items-center justify-center font-bold">
                     {session.user?.name?.[0] || '?'}
                   </div>
                 )}
               </Link>
             ) : (
-              <button onClick={() => signIn('google')} className="text-dark-300 hover:text-white transition-colors text-sm font-medium ml-2 border border-dark-700 px-4 py-2 rounded-full hover:bg-dark-800">
+              <button onClick={() => signIn('google')} className={`ml-2 font-bold uppercase ${scrolled ? 'hover:text-accent-600' : 'hover:text-accent-400'} transition-colors`}>
                 Entrar
               </button>
             )}
           </div>
 
-          {/* Mobile menu and Profile */}
-          <div className="md:hidden flex items-center gap-4">
-            {session ? (
-              <Link href="/perfil">
-                {session.user?.image ? (
-                  <img src={session.user.image} alt={session.user.name || ''} className="w-8 h-8 rounded-full border border-gold-500/50" />
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-gold-500/20 flex items-center justify-center text-gold-400 border border-gold-500/50 text-xs">
-                    {session.user?.name?.[0] || '?'}
-                  </div>
-                )}
-              </Link>
-            ) : (
-              <button onClick={() => signIn('google')} className="text-dark-300 hover:text-white transition-colors text-sm font-medium border border-dark-700 px-3 py-1.5 rounded-full hover:bg-dark-800">
-                Entrar
-              </button>
-            )}
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="text-dark-300 hover:text-gold-400 transition-colors p-2"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {menuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
-          </div>
+          {/* Mobile menu toggle */}
+          <button onClick={() => setMenuOpen(!menuOpen)} className={`md:hidden p-2 transition-colors ${scrolled ? 'text-[var(--color-text-main)]' : 'text-[var(--color-ivory-200)]'}`}>
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {menuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
         </div>
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden glass mt-2 mx-4 rounded-2xl p-4 animate-fade-in">
-            <a href="#servicios" onClick={() => setMenuOpen(false)} className="block py-3 text-dark-300 hover:text-gold-400 transition-colors text-sm font-medium tracking-wide uppercase">Servicios</a>
-            {products.length > 0 && (
-              <a href="#productos" onClick={() => setMenuOpen(false)} className="block py-3 text-dark-300 hover:text-gold-400 transition-colors text-sm font-medium tracking-wide uppercase">Productos</a>
-            )}
-            <a href="#nosotros" onClick={() => setMenuOpen(false)} className="block py-3 text-dark-300 hover:text-gold-400 transition-colors text-sm font-medium tracking-wide uppercase">Nosotros</a>
-            <a href="#galeria" onClick={() => setMenuOpen(false)} className="block py-3 text-dark-300 hover:text-gold-400 transition-colors text-sm font-medium tracking-wide uppercase">Galería</a>
-            <a href="#resenas" onClick={() => setMenuOpen(false)} className="block py-3 text-dark-300 hover:text-gold-400 transition-colors text-sm font-medium tracking-wide uppercase">Reseñas</a>
-            <a href="#ubicacion" onClick={() => setMenuOpen(false)} className="block py-3 text-dark-300 hover:text-gold-400 transition-colors text-sm font-medium tracking-wide uppercase">Ubicación</a>
-            <Link href="/reservar" className="block mt-2 btn-gold text-dark-950 px-6 py-2.5 rounded-full text-sm font-semibold tracking-wide uppercase text-center">
+          <div className="md:hidden bg-[var(--color-surface)] border-b border-[var(--color-border-subtle)] px-4 py-4 flex flex-col gap-4 font-bold uppercase text-sm">
+            <a href="#servicios" onClick={() => setMenuOpen(false)}>Servicios</a>
+            {products.length > 0 && <a href="#productos" onClick={() => setMenuOpen(false)}>Productos</a>}
+            <a href="#nosotros" onClick={() => setMenuOpen(false)}>Nosotros</a>
+            <a href="#galeria" onClick={() => setMenuOpen(false)}>Galería</a>
+            <a href="#resenas" onClick={() => setMenuOpen(false)}>Reseñas</a>
+            <Link href="/reservar" onClick={() => setMenuOpen(false)} className="btn-cta px-4 py-3 mt-2 text-center">
               Reservar Turno
             </Link>
+            {!session && (
+              <button onClick={() => { signIn('google'); setMenuOpen(false); }} className="text-left mt-2">
+                Entrar con Google
+              </button>
+            )}
           </div>
         )}
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <img src={heroImage} alt="Barbershop interior" className="w-full h-full object-cover opacity-30 mix-blend-overlay" />
-          <div className="absolute inset-0 bg-gradient-to-t from-dark-950 via-dark-950/60 to-transparent"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-dark-950/80 via-transparent to-transparent"></div>
+      {/* Hero Section (Dynamic & Premium) */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[var(--color-green-950)]">
+        {/* Background Image with Parallax-like slow zoom */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <img 
+            src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=2074&auto=format&fit=crop" 
+            alt="Barbería Premium" 
+            className="w-full h-full object-cover opacity-60 animate-slow-zoom"
+          />
+          {/* Rich Gradient Overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-green-950)] via-[var(--color-green-900)]/80 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[var(--color-surface)]"></div>
         </div>
 
-        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <div className="animate-fade-in-up">
-            <div className="inline-flex items-center gap-2 glass-light px-4 py-2 rounded-full mb-6 sm:mb-8">
-              <span className="w-2 h-2 rounded-full bg-gold-400 animate-pulse"></span>
-              <span className="text-dark-300 text-xs sm:text-sm font-medium tracking-wider uppercase">
-                Junín de los Andes, Neuquén
-              </span>
+        {/* Content Container */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-start pt-20">
+          
+          <div className="max-w-2xl text-left stagger-children">
+            {/* Small eyebrow text */}
+            <div className="flex items-center gap-3 mb-6">
+              <span className="h-[1px] w-12 bg-accent-400"></span>
+              <span className="text-accent-400 font-bold uppercase tracking-[0.2em] text-sm">Barbería Exclusiva</span>
             </div>
+            
+            {/* Main Title */}
+            <h1 className="text-7xl sm:text-8xl md:text-9xl font-heading font-bold text-[var(--color-ivory-200)] leading-[0.85] mb-6 uppercase tracking-tighter drop-shadow-2xl">
+              Vas<span className="text-accent-400">co</span>co
+            </h1>
+            
+            {/* Subtitle */}
+            <p className="text-lg sm:text-xl md:text-2xl font-medium text-[var(--color-ivory-300)] mb-10 leading-relaxed opacity-90">
+              {heroSubtitle}
+            </p>
+            
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <Link href="/reservar" className="btn-cta px-10 py-4 text-lg w-full sm:w-auto text-center hover:scale-105 shadow-[0_0_40px_rgba(198,166,100,0.3)]">
+                Reservar Turno
+              </Link>
+              <a href="#servicios" className="px-10 py-4 text-lg w-full sm:w-auto text-center text-[var(--color-ivory-200)] border border-[var(--color-border-dark)] rounded-lg hover:bg-[var(--color-ivory-200)]/10 transition-colors uppercase font-bold tracking-wider backdrop-blur-sm">
+                Descubrir Más
+              </a>
+            </div>
+            
+            {/* Trust Badge (Glassmorphism) — only shown with real 5-star reviews */}
+            {fiveStarReviews.length > 0 && (
+              <a
+                href="#resenas"
+                id="hero-reviews-badge"
+                className="mt-16 inline-flex items-center gap-4 p-4 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl transition-all hover:-translate-y-1 hover:border-accent-400/50 hover:bg-white/10 cursor-pointer group"
+              >
+                <div className="flex -space-x-3">
+                  {fiveStarReviews.slice(0, 3).map((review) =>
+                    review.user?.image ? (
+                      <img
+                        key={review.id}
+                        className="w-10 h-10 rounded-full border-2 border-[var(--color-green-900)] object-cover"
+                        src={review.user.image}
+                        alt={review.user?.name || 'Cliente'}
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <div
+                        key={review.id}
+                        className="w-10 h-10 rounded-full border-2 border-[var(--color-green-900)] bg-[var(--color-green-800,#1d3d31)] text-[var(--color-ivory-200)] flex items-center justify-center font-bold text-sm"
+                      >
+                        {(review.user?.name || 'C')[0].toUpperCase()}
+                      </div>
+                    )
+                  )}
+                </div>
+                <div>
+                  <div className="flex items-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className="w-4 h-4 text-accent-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                    ))}
+                  </div>
+                  <p className="text-xs font-bold text-[var(--color-ivory-200)] mt-1 uppercase tracking-wider">
+                    {fiveStarReviews.length === 1 ? '1 reseña de 5 estrellas' : `${fiveStarReviews.length} reseñas de 5 estrellas`}
+                  </p>
+                </div>
+                <svg className="w-4 h-4 text-accent-400 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+              </a>
+            )}
           </div>
+        </div>
 
-          <h1 className="text-5xl sm:text-7xl lg:text-8xl font-heading font-bold tracking-tight mb-4 sm:mb-6 animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
-            <span className="text-gold-gradient">HAIR</span>
-            <span className="text-white">BONA</span>
-          </h1>
-
-          <p className="text-dark-400 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed animate-fade-in-up px-2" style={{ animationDelay: '0.3s' }}>
-            {heroSubtitle}
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '0.45s' }}>
-            <Link href="/reservar" className="btn-gold text-dark-950 px-8 py-3.5 rounded-full text-sm font-bold tracking-wider uppercase flex items-center gap-2 animate-pulse-gold w-full sm:w-auto justify-center">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              Reservar Turno
-            </Link>
-          </div>
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-70">
+          <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-[var(--color-green-900)]">Scroll</span>
+          <div className="w-[1px] h-12 bg-gradient-to-b from-[var(--color-green-900)] to-transparent"></div>
         </div>
       </section>
 
       {/* Services Section */}
-      <section id="servicios" className="py-16 sm:py-24 lg:py-32 relative z-10 bg-dark-950">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-dark-700 to-transparent"></div>
+      <section id="servicios" className="py-20 bg-[var(--color-surface)]  relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 sm:mb-16">
-            <span className="text-gold-500 text-sm font-semibold tracking-widest uppercase">Nuestros</span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-white mt-2">Servicios</h2>
-            <div className="mt-4 mx-auto w-20 h-0.5 bg-gradient-to-r from-transparent via-gold-500 to-transparent"></div>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-6xl font-heading font-bold uppercase tracking-tighter text-[var(--color-green-900)]">Servicios</h2>
+            <div className="w-24 h-2 bg-accent-400 mx-auto mt-6"></div>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-4 sm:gap-5 stagger-children">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-children">
             {services.map((service) => (
-              <Link key={service.id} href={`/reservar?service=${service.id}`} className="group glass rounded-2xl p-5 sm:p-6 hover:glow-gold transition-all duration-500 hover:-translate-y-1 cursor-pointer w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(33.333%-0.875rem)]">
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="flex-shrink-0 mt-1">
-                    <img 
-                      src={service.image || '/icons/corte.jpg'} 
-                      alt={service.name} 
-                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border border-gold-500/30 group-hover:border-gold-400 transition-colors"
-                    />
+              <Link key={service.id} href={`/reservar?service=${service.id}`} className="solid-card block p-6 sm:p-8 relative group cursor-pointer bg-[var(--color-surface)]">
+                <div className="flex items-start gap-4">
+                  <img src={service.image || '/icons/corte.jpg'} alt={service.name} className="w-16 h-16 object-cover rounded-none  grayscale group-hover:grayscale-0 transition-all" />
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold uppercase tracking-wide text-[var(--color-text-main)] group-hover:text-accent-600 transition-colors">{service.name}</h3>
+                    <p className="text-[var(--color-text-muted)] mt-2 text-sm font-medium">{service.duration} min</p>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-white text-base sm:text-lg font-heading font-semibold group-hover:text-gold-400 transition-colors">{service.name}</h3>
-                    {service.description && service.description.trim() !== '' && (
-                      <p className="text-dark-400 text-sm mt-1 leading-relaxed line-clamp-2">{service.description}</p>
-                    )}
-                    {service.price && (
-                      <div className="mt-3">
-                        <span className="text-gold-400 text-lg sm:text-xl font-bold">${service.price.toLocaleString()}</span>
-                      </div>
-                    )}
+                  <div className="text-xl font-black text-[var(--color-text-main)]">
+                    ${service.price}
                   </div>
+                </div>
+                <div className="mt-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span className="font-bold text-accent-600 uppercase text-sm border-b-2 border-accent-600 pb-1">Reservar →</span>
                 </div>
               </Link>
             ))}
@@ -362,54 +374,37 @@ export default function HomePage() {
 
       {/* Products Section */}
       {products.length > 0 && (
-        <section id="productos" className="py-16 sm:py-24 lg:py-32 relative z-10">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-dark-700 to-transparent"></div>
+        <section id="productos" className="py-20 bg-green-900 text-[var(--color-ivory-200)] py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-10 sm:mb-16">
-              <span className="text-gold-500 text-sm font-semibold tracking-widest uppercase">Nuestra Tienda</span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-white mt-2">Productos</h2>
-              <div className="mt-4 mx-auto w-20 h-0.5 bg-gradient-to-r from-transparent via-gold-500 to-transparent"></div>
+            <div className="text-center mb-16">
+              <h2 className="text-4xl sm:text-6xl font-heading font-bold uppercase tracking-tighter text-[var(--color-ivory-200)]">Tienda</h2>
+              <div className="w-24 h-2 bg-accent-400 mx-auto mt-6"></div>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-6 sm:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {products.map((product) => (
-                <div key={product.id} className="glass rounded-3xl overflow-hidden flex flex-col group hover:-translate-y-2 transition-transform duration-500 relative w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.375rem)] lg:w-[calc(25%-1.5rem)]">
+                <div key={product.id} className="solid-card bg-[var(--color-surface)] text-[var(--color-text-main)] flex flex-col relative group hover:-translate-y-2 transition-transform">
                   {product.stock <= 0 && (
-                    <div className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full z-20 shadow-lg">
-                      Agotado
-                    </div>
+                    <div className="absolute top-4 right-4 bg-red-600 text-white text-xs font-black px-3 py-1 rounded-md uppercase z-20">Agotado</div>
                   )}
-                  <div className="aspect-square relative overflow-hidden bg-dark-900 p-6 flex items-center justify-center">
+                  <div className="aspect-square bg-[var(--color-surface)] p-4 border-b border-[var(--color-border-subtle)] relative rounded-t-xl overflow-hidden">
                     {product.image ? (
-                      <img 
-                        src={product.image} 
-                        alt={product.name} 
-                        className={`w-full h-full object-contain group-hover:scale-110 transition-transform duration-700 ${product.stock <= 0 ? 'opacity-50 grayscale' : ''}`}
-                      />
+                      <img src={product.image} alt={product.name} className={`w-full h-full object-contain ${product.stock <= 0 ? 'opacity-50 grayscale' : ''}`} />
                     ) : (
-                      <div className="text-dark-600 text-sm">Sin imagen</div>
+                      <div className="w-full h-full flex items-center justify-center font-bold text-[var(--color-text-muted)]">SIN IMAGEN</div>
                     )}
                   </div>
-                  <div className="p-5 sm:p-6 flex flex-col flex-1 border-t border-dark-800">
-                    <h3 className="text-lg font-heading font-bold text-white mb-1 group-hover:text-gold-400 transition-colors">{product.name}</h3>
-                    {product.description && product.description.trim() !== '' && (
-                      <p className="text-dark-400 text-sm leading-relaxed mb-4 line-clamp-2 flex-1">{product.description}</p>
-                    )}
-                    
-                    <div className="flex items-center justify-between mt-auto pt-4">
-                      <span className="text-gold-400 text-xl font-bold">${product.price.toLocaleString()}</span>
-                      <button
+                  <div className="p-5 flex flex-col flex-1">
+                    <h3 className="font-black text-lg uppercase leading-tight mb-2">{product.name}</h3>
+                    <p className="text-[var(--color-text-muted)] text-sm font-medium mb-4 flex-1 line-clamp-2">{product.description}</p>
+                    <div className="flex items-center justify-between mt-auto">
+                      <span className="text-2xl font-black text-accent-600">${product.price}</span>
+                      <button 
                         onClick={() => addToCart(product)}
                         disabled={product.stock <= 0}
-                        className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
-                          product.stock > 0 
-                            ? 'bg-gold-500/10 text-gold-400 hover:bg-gold-500 hover:text-dark-950' 
-                            : 'bg-dark-800 text-dark-500 cursor-not-allowed'
-                        }`}
+                        className="btn-solid px-4 py-2 text-xs"
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
+                        {product.stock > 0 ? 'Comprar' : 'Sin Stock'}
                       </button>
                     </div>
                   </div>
@@ -420,46 +415,24 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* Sobre Nosotros (Barberos) */}
-      <section id="nosotros" className="py-16 sm:py-24 lg:py-32 relative z-10">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-dark-700 to-transparent"></div>
+      {/* Barbers Section */}
+      <section id="nosotros" className="py-20 bg-[var(--color-surface)] ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 sm:mb-16">
-            <span className="text-gold-500 text-sm font-semibold tracking-widest uppercase">Los Profesionales</span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-white mt-2">Sobre Nosotros</h2>
-            <div className="mt-4 mx-auto w-20 h-0.5 bg-gradient-to-r from-transparent via-gold-500 to-transparent"></div>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-6xl font-heading font-bold uppercase tracking-tighter text-[var(--color-green-900)]">El Equipo</h2>
+            <div className="w-24 h-2 bg-accent-400 mx-auto mt-6"></div>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-6 sm:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
             {barbers.map((barber) => (
-              <div key={barber.id} className="glass rounded-3xl overflow-hidden flex flex-col group hover:-translate-y-2 transition-transform duration-500 w-full sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.375rem)]">
-                <div className="aspect-[4/5] relative overflow-hidden">
-                  <img 
-                    src={barber.photo || 'https://i.pravatar.cc/400'} 
-                    alt={barber.name} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-dark-950 via-transparent to-transparent"></div>
+              <div key={barber.id} className="solid-card bg-[var(--color-surface)] group hover:-translate-y-2">
+                <div className="aspect-square border-b border-[var(--color-border-subtle)] overflow-hidden relative rounded-t-xl">
+                  <img src={barber.photo || 'https://i.pravatar.cc/400'} alt={barber.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                  <div className="absolute inset-0 bg-green-900/20 group-hover:bg-transparent transition-colors"></div>
                 </div>
-                <div className="p-5 sm:p-6 relative -mt-10 z-10 flex flex-col flex-1">
-                  <h3 className="text-xl sm:text-2xl font-heading font-bold text-gold-400 mb-2">{barber.name}</h3>
-                  {barber.description && barber.description.trim() !== '' && (
-                    <p className="text-dark-300 text-sm leading-relaxed mb-4 sm:mb-6 flex-1">{barber.description}</p>
-                  )}
-                  
-                  {barber.whatsapp && (
-                    <a 
-                      href={`https://wa.me/${barber.whatsapp.replace(/\D/g, '')}`} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="bg-[#25D366] hover:bg-[#1ebd5b] text-white px-4 py-3 rounded-xl flex items-center justify-center gap-2 font-medium transition-colors w-full mt-auto text-sm"
-                    >
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-                      </svg>
-                      Hablar con {barber.name}
-                    </a>
-                  )}
+                <div className="p-6 text-center">
+                  <h3 className="text-2xl font-black uppercase tracking-wide text-[var(--color-text-main)]">{barber.name}</h3>
+                  <p className="text-accent-600 font-bold text-sm uppercase mt-1">Barbero Profesional</p>
                 </div>
               </div>
             ))}
@@ -467,399 +440,284 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Galería Section */}
-      <section id="galeria" className="py-16 sm:py-24 lg:py-32 relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-dark-700 to-transparent"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 sm:mb-16">
-            <span className="text-gold-500 text-sm font-semibold tracking-widest uppercase">Nuestro Arte</span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-white mt-2">Galería</h2>
-            <div className="mt-4 mx-auto w-20 h-0.5 bg-gradient-to-r from-transparent via-gold-500 to-transparent"></div>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 p-2 sm:p-8 relative">
-            {gallery.slice(0, 12).map((img, index) => {
-              const rotation = (index % 2 === 0 ? 1 : -1) * (2 + (index % 5));
-              return (
-                <div 
-                  key={img.id}
-                  className="gallery-photo cursor-pointer relative aspect-square bg-dark-900 rounded-lg p-1.5 sm:p-2 border border-dark-800 w-[calc(50%-0.375rem)] md:w-[calc(33.333%-0.5rem)] lg:w-[calc(25%-0.75rem)]"
-                  style={{ transform: `rotate(${rotation}deg)` }}
-                  onClick={() => setLightboxImg(img.url)}
-                >
-                  <img src={img.url} alt={img.caption || 'Hairbona Gallery'} className="w-full h-full object-cover rounded shadow-inner" />
+      {/* Gallery Section */}
+      {gallery.length > 0 && (
+        <section id="galeria" className="py-20 bg-green-900 border-b-4 border-accent-400">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl sm:text-6xl font-heading font-bold uppercase tracking-tighter text-[var(--color-ivory-200)]">Galería</h2>
+              <div className="w-24 h-2 bg-accent-400 mx-auto mt-6"></div>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {gallery.map((img) => (
+                <div key={img.id} onClick={() => setLightboxImg(img.url)} className="gallery-solid aspect-square hover:border-accent-400 transition-colors cursor-pointer relative overflow-hidden group">
+                  <img src={img.url} alt="Galería" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all group-hover:scale-110" />
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+              ))}
+            </div>
 
-      {/* Lightbox for Gallery */}
-      {lightboxImg && (
-        <div 
-          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 cursor-pointer animate-fade-in"
-          onClick={() => setLightboxImg(null)}
-        >
-          <img src={lightboxImg} alt="Gallery view" className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl" />
-          <button className="absolute top-4 right-4 sm:top-6 sm:right-6 text-white hover:text-gold-400 transition-colors">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
-        </div>
-      )}
-
-      {/* Reseñas Section */}
-      <section id="resenas" className="py-16 sm:py-24 bg-dark-900 relative">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-dark-700 to-transparent"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 sm:mb-16">
-            <span className="text-gold-500 text-sm font-semibold tracking-widest uppercase">Lo que dicen</span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-white mt-2">Nuestros Clientes</h2>
-            <div className="mt-4 mx-auto w-20 h-0.5 bg-gradient-to-r from-transparent via-gold-500 to-transparent"></div>
-          </div>
-
-          {/* Leave a review */}
-          <div className="glass rounded-2xl p-5 sm:p-8 mb-8 sm:mb-12 max-w-2xl mx-auto">
-            {session ? (
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  {session.user?.image && (
-                    <img src={session.user.image} alt={session.user.name || ''} className="w-10 h-10 rounded-full border-2 border-dark-700" />
-                  )}
-                  <div>
-                    <p className="text-white text-sm font-medium">{session.user?.name}</p>
-                    <p className="text-dark-500 text-xs">Dejá tu reseña</p>
-                  </div>
-                </div>
-
-                {/* Star rating selector */}
-                <div className="flex items-center gap-1 mb-4">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() => setReviewRating(star)}
-                      onMouseEnter={() => setHoverRating(star)}
-                      onMouseLeave={() => setHoverRating(0)}
-                      className="transition-transform hover:scale-110"
-                    >
-                      <svg
-                        className={`w-7 h-7 sm:w-8 sm:h-8 transition-colors ${
-                          star <= (hoverRating || reviewRating) ? 'text-gold-400' : 'text-dark-700'
-                        }`}
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    </button>
-                  ))}
-                </div>
-
-                <textarea
-                  value={reviewText}
-                  onChange={(e) => setReviewText(e.target.value)}
-                  placeholder="Contanos tu experiencia en Hairbona..."
-                  className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-3 text-white placeholder-dark-500 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500/30 transition-all resize-none text-sm"
-                  rows={3}
-                />
-                <div className="flex justify-end mt-3">
-                  <button
-                    onClick={submitReview}
-                    disabled={submittingReview || !reviewText.trim()}
-                    className="btn-gold text-dark-950 px-6 py-2.5 rounded-xl text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                  >
-                    {submittingReview ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-dark-950/30 border-t-dark-950 rounded-full animate-spin"></div>
-                        Enviando...
-                      </>
-                    ) : (
-                      'Publicar Reseña'
-                    )}
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="text-center py-4">
-                <p className="text-dark-400 text-sm mb-4">Iniciá sesión con Google para dejar tu reseña</p>
-                <button
-                  onClick={() => signIn('google')}
-                  className="inline-flex items-center gap-3 bg-white text-gray-700 px-6 py-3 rounded-xl font-medium hover:bg-gray-100 transition-colors text-sm shadow-lg"
-                >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                  </svg>
-                  Iniciar sesión con Google
+            {lightboxImg && (
+              <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4" onClick={() => setLightboxImg(null)}>
+                <img src={lightboxImg} className="max-w-full max-h-full object-contain" />
+                <button className="absolute top-4 right-4 text-white p-2">
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
               </div>
             )}
           </div>
+        </section>
+      )}
 
-          {/* Reviews list */}
-          {reviews.length === 0 ? (
-            <div className="text-center py-8 sm:py-12">
-              <svg className="w-12 h-12 sm:w-16 sm:h-16 text-dark-700 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-              </svg>
-              <p className="text-dark-500 text-base sm:text-lg font-medium">Aún no hay reseñas</p>
-              <p className="text-dark-600 text-sm mt-1">¡Sé el primero en contar tu experiencia!</p>
-            </div>
-          ) : (
-            <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
-              {reviews.map((review) => (
-                <div key={review.id} className="glass p-5 sm:p-8 rounded-2xl relative w-full md:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]">
-                  <div className="flex text-gold-400 mb-3 sm:mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <svg key={i} className={`w-4 h-4 sm:w-5 sm:h-5 ${i < review.rating ? 'text-gold-400' : 'text-dark-700'}`} fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                    ))}
-                  </div>
-                  <p className="text-dark-300 italic mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">&ldquo;{review.text}&rdquo;</p>
-                  <div className="flex items-center gap-3 justify-between">
-                    <div className="flex items-center gap-3">
-                      {review.user.image ? (
-                        <img src={review.user.image} alt={review.user.name || ''} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-dark-700" />
-                      ) : (
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-dark-700 flex items-center justify-center">
-                          <span className="text-dark-400 font-bold">{(review.user.name || '?')[0]}</span>
-                        </div>
-                      )}
-                      <div>
-                        <span className="text-white font-medium text-sm">{review.user.name || 'Anónimo'}</span>
-                        <p className="text-dark-500 text-xs mt-0.5">{new Date(review.createdAt).toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+      {/* Reviews Section */}
+      <section id="resenas" className="py-20 bg-[var(--color-surface)] ">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-6xl font-heading font-bold uppercase tracking-tighter text-[var(--color-green-900)]">Reseñas</h2>
+            <div className="w-24 h-2 bg-accent-400 mx-auto mt-6"></div>
+          </div>
+
+          <div className="space-y-6 mb-16">
+            {reviews.map((review) => (
+              <div key={review.id} className="solid-card bg-[var(--color-surface)] p-6 relative">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-4">
+                    {review.user?.image ? (
+                      <img src={review.user?.image} alt={(review.user?.name || "Usuario")} className="w-12 h-12 rounded-full " />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-green-900 text-[var(--color-ivory-200)] flex items-center justify-center font-bold">
+                        {(review.user?.name || "Usuario")[0]}
+                      </div>
+                    )}
+                    <div>
+                      <h4 className="font-black uppercase text-[var(--color-text-main)]">{(review.user?.name || "Usuario")}</h4>
+                      <div className="flex gap-1 mt-1">
+                        {[...Array(5)].map((_, i) => (
+                          <svg key={i} className={`w-4 h-4 ${i < review.rating ? 'text-accent-500' : 'text-green-900/20'}`} fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                        ))}
                       </div>
                     </div>
-                    {session?.user && (session.user as any).id === review.userId && (
-                      <button
-                        onClick={() => deleteReview(review.id)}
-                        className="text-dark-600 hover:text-red-400 p-2 rounded-full hover:bg-red-500/10 transition-colors"
-                        title="Borrar mi reseña"
-                      >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                  </div>
+                  <span className="text-sm font-bold text-[var(--color-text-muted)]">{new Date(review.createdAt).toLocaleDateString()}</span>
+                </div>
+                <p className="text-[var(--color-text-main)] font-medium italic">"{review.text}"</p>
+                {((session?.user as any)?.id === review.userId) && (
+                  <button onClick={() => deleteReview(review.id)} className="absolute bottom-4 right-4 text-[var(--color-text-muted)] hover:text-red-500 transition-colors p-2" title="Eliminar reseña">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                  </button>
+                )}
+              </div>
+            ))}
+            {reviews.length === 0 && (
+              <div className="text-center text-[var(--color-text-muted)] font-bold uppercase py-8 border-2 border-dashed border-green-900">
+                Aún no hay reseñas. ¡Sé el primero!
+              </div>
+            )}
+          </div>
+
+          {session ? (
+            <div className="solid-card bg-[var(--color-surface)] p-8">
+              <h3 className="text-2xl font-black uppercase text-[var(--color-green-900)] mb-6">Dejanos tu opinión</h3>
+              <form onSubmit={submitReview} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-bold uppercase text-green-900 mb-2">Calificación</label>
+                  <div className="flex gap-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button key={star} type="button" onClick={() => setReviewRating(star)} className={`w-10 h-10 rounded-lg flex items-center justify-center border-2 transition-colors ${reviewRating >= star ? 'border-accent-500 text-accent-500 bg-[var(--color-surface)]' : 'border-[var(--color-border-subtle)] text-green-900/30 hover:border-accent-500 hover:text-accent-500'}`}>
+                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
                       </button>
-                    )}
+                    ))}
                   </div>
                 </div>
-              ))}
+                <div>
+                  <label className="block text-sm font-bold uppercase text-green-900 mb-2">Comentario</label>
+                  <textarea value={reviewText} onChange={(e) => setReviewText(e.target.value)} required rows={4} className="w-full bg-[var(--color-surface)] rounded-xl border border-[var(--color-border-subtle)] p-4 text-[var(--color-text-main)] focus:border-accent-500 outline-none resize-none font-medium"></textarea>
+                </div>
+                <button type="submit" disabled={submittingReview} className="btn-solid w-full py-4 text-lg">
+                  {submittingReview ? 'Enviando...' : 'Publicar Reseña'}
+                </button>
+              </form>
+            </div>
+          ) : (
+            <div className="text-center">
+              <button onClick={() => signIn('google')} className="btn-solid px-8 py-3">
+                Iniciá sesión para dejar una reseña
+              </button>
             </div>
           )}
         </div>
       </section>
 
-      {/* Location Section */}
-      <section id="ubicacion" className="py-16 sm:py-24 lg:py-32 relative bg-dark-950">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-dark-700 to-transparent"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 sm:mb-16">
-            <span className="text-gold-500 text-sm font-semibold tracking-widest uppercase">Dónde estamos</span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-white mt-2">Ubicación</h2>
-            <div className="mt-4 mx-auto w-20 h-0.5 bg-gradient-to-r from-transparent via-gold-500 to-transparent"></div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-stretch">
-            <div className="glass rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
-              <div>
-                <h3 className="text-white text-lg sm:text-xl font-heading font-semibold mb-5 sm:mb-6">Encontranos en</h3>
-                <div className="space-y-4 sm:space-y-5">
-                  <div className="flex items-start gap-3 sm:gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-gold-500/10 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-white font-medium text-sm sm:text-base">Dirección</p>
-                      <p className="text-dark-400 text-xs sm:text-sm mt-0.5">Coronel Suárez 185, Local 3<br />Junín de los Andes, Neuquén<br />Argentina</p>
+      {/* Cart Sidebar */}
+      {cartOpen && (
+        <>
+          <div className="fixed inset-0 bg-green-950/80 z-50 transition-opacity" onClick={() => setCartOpen(false)}></div>
+          <div className="fixed inset-y-0 right-0 w-full sm:w-96 bg-[var(--color-surface)] border-l-4 border-green-900 shadow-2xl z-50 flex flex-col">
+            <div className="p-6 border-b border-[var(--color-border-subtle)] flex items-center justify-between bg-[var(--color-surface)]">
+              <h2 className="text-2xl font-black uppercase text-[var(--color-green-900)]">Tu Carrito</h2>
+              <button onClick={() => setCartOpen(false)} className="text-green-900 hover:text-red-600 transition-colors">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              {cart.length === 0 ? (
+                <div className="text-center text-[var(--color-text-muted)] font-bold uppercase mt-10">El carrito está vacío</div>
+              ) : (
+                cart.map((item) => (
+                  <div key={item.product.id} className="flex gap-4 bg-[var(--color-surface)]  p-4">
+                    <img src={item.product.image || ''} alt={item.product.name} className="w-20 h-20 object-contain bg-[var(--color-surface)]  p-1" />
+                    <div className="flex-1">
+                      <h4 className="font-black uppercase text-[var(--color-text-main)] leading-tight">{item.product.name}</h4>
+                      <p className="text-accent-600 font-bold mt-1">${item.product.price}</p>
+                      <div className="flex items-center gap-4 mt-3">
+                        <div className="flex items-center  bg-[var(--color-surface)]">
+                          <button onClick={() => updateQuantity(item.product.id, -1)} className="px-2 py-1 text-green-900 hover:bg-green-900 hover:text-[var(--color-ivory-200)] font-bold">-</button>
+                          <span className="px-3 font-bold text-[var(--color-text-main)] border-x-2 border-green-900">{item.quantity}</span>
+                          <button onClick={() => updateQuantity(item.product.id, 1)} className="px-2 py-1 text-green-900 hover:bg-green-900 hover:text-[var(--color-ivory-200)] font-bold">+</button>
+                        </div>
+                        <button onClick={() => updateQuantity(item.product.id, -item.quantity)} className="text-red-600 font-bold uppercase text-xs hover:underline">
+                          Quitar
+                        </button>
+                      </div>
                     </div>
                   </div>
+                ))
+              )}
+            </div>
 
-                  <div className="flex items-start gap-3 sm:gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-gold-500/10 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-white font-medium text-sm sm:text-base">Horarios</p>
-                      <p className="text-dark-400 text-xs sm:text-sm mt-0.5">Lunes a Sábados<br />09:00 - 13:00 | 15:00 - 20:00</p>
-                    </div>
+            {cart.length > 0 && (
+              <div className="p-6 border-t-2 border-green-900 bg-[var(--color-surface)]">
+                <div className="flex justify-between items-center mb-6">
+                  <span className="font-bold uppercase text-green-900">Total</span>
+                  <span className="text-3xl font-black text-[var(--color-text-main)]">${cartTotal}</span>
+                </div>
+                <Link href={`https://wa.me/${config.whatsapp}?text=${encodeURIComponent(checkoutMessage)}`} target="_blank" className="btn-solid w-full py-4 text-center text-lg shadow-lg">
+                  Pedir por WhatsApp
+                </Link>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
+      {/* Cart Floating Button */}
+      {cart.length > 0 && (
+        <button 
+          onClick={() => setCartOpen(true)}
+          className="fixed bottom-6 right-6 btn-solid w-16 h-16 rounded-full shadow-md flex items-center justify-center z-40"
+        >
+          <div className="relative">
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+            <span className="absolute -top-3 -right-3 bg-red-600 text-white text-xs font-black w-6 h-6 flex items-center justify-center rounded-full border-2 border-ivory-200">
+              {cart.reduce((sum, item) => sum + item.quantity, 0)}
+            </span>
+          </div>
+        </button>
+      )}
+
+      {/* Ubicación y Contacto Section */}
+      <section className="py-24 bg-[var(--color-bg-main)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <span className="text-accent-400 font-bold uppercase tracking-[0.2em] text-sm">Visitanos</span>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold text-[var(--color-green-900)] mt-2 uppercase tracking-tight">
+              Ubicación y Contacto
+            </h2>
+            <div className="w-24 h-1 bg-accent-400 mx-auto mt-6"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-[var(--color-green-950)] rounded-3xl p-8 sm:p-12 shadow-2xl border border-[var(--color-border-subtle)] relative overflow-hidden">
+            {/* Decoration */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-accent-400/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+            
+            {/* Col 1: Info */}
+            <div className="space-y-8 relative z-10">
+              <div>
+                <h3 className="text-3xl font-heading font-bold text-[var(--color-ivory-200)] mb-5">Vascoco Barbería</h3>
+                <div className="flex items-start gap-4 text-[var(--color-ivory-300)] opacity-90">
+                  <svg className="w-6 h-6 text-accent-400 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                  <p className="text-lg leading-relaxed">
+                    San Juan 127<br />
+                    Junín de los Andes, Neuquén<br />
+                    Argentina
+                  </p>
+                </div>
+              </div>
+              
+              <div className="pt-6 border-t border-[var(--color-ivory-200)]/10">
+                <h4 className="text-sm font-bold uppercase tracking-widest text-accent-400 mb-5">Horarios de Atención</h4>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center bg-white/5 rounded-xl p-4 border border-white/5 transition-colors hover:bg-white/10">
+                    <span className="font-medium text-[var(--color-ivory-200)]">Martes a Sábado</span>
+                    <span className="text-[var(--color-ivory-300)] font-bold text-right text-sm sm:text-base">10:00 - 13:00 <br className="sm:hidden"/> <span className="hidden sm:inline px-2">|</span> 16:00 - 21:00</span>
+                  </div>
+                  <div className="flex justify-between items-center bg-white/5 rounded-xl p-4 border border-white/5 transition-colors hover:bg-white/10">
+                    <span className="font-medium text-[var(--color-ivory-200)]">Domingo y Lunes</span>
+                    <span className="text-accent-400 font-bold uppercase text-sm tracking-widest">Cerrado</span>
                   </div>
                 </div>
               </div>
-
-              <Link href="/reservar" className="btn-gold mt-6 sm:mt-8 text-dark-950 px-6 py-3 rounded-xl text-sm font-bold tracking-wider uppercase text-center flex items-center justify-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                Reservar Turno
-              </Link>
+              
+              <div className="pt-4">
+                <a 
+                  href={`https://maps.google.com/?q=${encodeURIComponent('San Juan 127, Junín de los Andes, Neuquén')}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="inline-flex items-center justify-center gap-3 w-full sm:w-auto btn-solid px-8 py-4 text-sm font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg hover:shadow-[0_8px_30px_rgba(198,166,100,0.3)] hover:-translate-y-1"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
+                  Cómo llegar
+                </a>
+              </div>
             </div>
-
-            <div className="glass rounded-2xl overflow-hidden h-[300px] sm:h-[400px] lg:h-auto">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3056.262529729864!2d-71.07727402359404!3d-39.95786446862569!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9610f9da3721345d%3A0xe54ef99dfccbb887!2sCoronel%20Su%C3%A1rez%20185%2C%20Q8371%20Jun%C3%ADn%20de%20los%20Andes%2C%20Neuqu%C3%A9n!5e0!3m2!1ses!2sar!4v1700000000000!5m2!1ses!2sar"
-                width="100%"
-                height="100%"
-                style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) brightness(0.95) contrast(0.9)' }}
-                allowFullScreen
-                loading="lazy"
+            
+            {/* Col 2: Map */}
+            <div className="h-[400px] lg:h-full min-h-[400px] w-full relative rounded-2xl overflow-hidden border border-[var(--color-ivory-200)]/10 shadow-2xl group z-10 bg-[var(--color-surface)]">
+              <iframe 
+                src="https://maps.google.com/maps?q=San%20Juan%20127,%20Jun%C3%ADn%20de%20los%20Andes,%20Neuqu%C3%A9n&t=&z=16&ie=UTF8&iwloc=&output=embed" 
+                width="100%" 
+                height="100%" 
+                style={{ border: 0 }} 
+                allowFullScreen={false} 
+                loading="lazy" 
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Ubicación de Hairbona"
+                className="absolute inset-0 w-full h-full grayscale-[30%] opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
               ></iframe>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Floating WhatsApp Button */}
-      <a 
-        href={`https://wa.me/${whatsappNumber.replace(/\D/g, '')}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 bg-[#25D366] text-white p-3 sm:p-4 rounded-full shadow-lg hover:scale-110 hover:shadow-2xl transition-all duration-300 animate-fade-in-up flex items-center justify-center group"
-      >
-        <span className="absolute right-full mr-3 sm:mr-4 bg-dark-800 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none hidden sm:block">
-          ¿Dudas? Escribinos
-        </span>
-        <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-        </svg>
-      </a>
-
       {/* Footer */}
-      <footer className="border-t border-dark-800/50 py-6 sm:py-8 relative z-10 bg-dark-950">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center gap-4">
-            <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-3 sm:gap-4">
-              <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group">
-                <span className="text-xl font-heading font-bold text-gold-gradient group-hover:opacity-80 transition-opacity">
-                  HAIRBONA
-                </span>
-                <svg className="w-5 h-5 text-dark-500 group-hover:text-gold-400 transition-colors" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                </svg>
-              </a>
-              <p className="text-dark-500 text-xs sm:text-sm text-center sm:text-right">
-                © {new Date().getFullYear()} Hairbona. Junín de los Andes, Neuquén.
-              </p>
-            </div>
-            <div className="flex items-center gap-4 sm:gap-6 text-xs text-dark-600">
-              <Link href="/privacidad" className="hover:text-dark-400 transition-colors">Política de Privacidad</Link>
-              <span>·</span>
-              <Link href="/terminos" className="hover:text-dark-400 transition-colors">Términos y Condiciones</Link>
-              <span>·</span>
-              <Link href="/perfil" className="hover:text-dark-400 transition-colors">Mi Perfil</Link>
-            </div>
-            <div className="mt-2 text-xs text-dark-600">
-              Powered by:{' '}
-              <a href="https://magmastudios.vercel.app" target="_blank" rel="noopener noreferrer" className="text-dark-400 hover:text-gold-400 transition-colors font-medium">
-                Magma Studios
-              </a>
-            </div>
+      <footer className="bg-green-950 text-[var(--color-ivory-200)] py-12 border-t-8 border-green-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl font-heading font-bold uppercase tracking-widest text-[var(--color-ivory-200)] mb-6">Vascoco</h2>
+          <p className="text-accent-400 font-bold uppercase tracking-widest text-sm mb-8">{heroSubtitle}</p>
+          <p className="text-[var(--color-ivory-300)] font-medium mb-8">
+            📍 <a href={`https://maps.google.com/?q=${encodeURIComponent(config.address || 'San Juan 127, Junín de los Andes, Neuquén')}`} target="_blank" className="hover:text-accent-400 underline">{config.address || 'San Juan 127, Junín de los Andes, Neuquén'}</a>
+          </p>
+          <div className="flex justify-center gap-6 mb-8">
+            <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="text-[var(--color-ivory-300)] hover:text-accent-400 transition-colors">
+              <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm3.98-10.169a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z"/></svg>
+            </a>
           </div>
+          <p className="text-[var(--color-ivory-300)] opacity-60 font-bold uppercase text-xs tracking-widest mb-4">&copy; {new Date().getFullYear()} Vascoco. Todos los derechos reservados.</p>
+          <div className="flex items-center justify-center gap-4 text-xs font-medium text-[var(--color-ivory-300)] opacity-60 mb-6">
+            <a href="/terminos" className="hover:text-accent-400 underline">Términos y Condiciones</a>
+            <span>|</span>
+            <a href="/privacidad" className="hover:text-accent-400 underline">Política de Privacidad</a>
+          </div>
+          <a href="https://magmastudios.vercel.app" target="_blank" rel="noopener noreferrer" className="inline-block mt-4 text-xs font-bold text-accent-400/70 hover:text-accent-400 transition-colors uppercase tracking-widest">
+            Powered by Magma Studios
+          </a>
         </div>
       </footer>
-
-      {/* Floating Cart Button */}
-      {cartItemCount > 0 && (
-        <button
-          onClick={() => setCartOpen(true)}
-          className="fixed bottom-20 right-4 sm:bottom-24 sm:right-6 z-40 bg-dark-900 border border-gold-500 text-white p-3 sm:p-4 rounded-full shadow-[0_0_15px_rgba(234,179,8,0.3)] hover:scale-110 hover:shadow-[0_0_25px_rgba(234,179,8,0.5)] transition-all duration-300 flex items-center justify-center group"
-        >
-          <div className="absolute -top-2 -right-2 bg-gold-500 text-dark-950 text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center animate-bounce-short">
-            {cartItemCount}
-          </div>
-          <svg className="w-6 h-6 sm:w-7 sm:h-7 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
-        </button>
-      )}
-
-      {/* Cart Drawer */}
-      {cartOpen && (
-        <div className="fixed inset-0 z-[60] flex justify-end">
-          <div 
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" 
-            onClick={() => setCartOpen(false)}
-          ></div>
-          <div className="relative w-full max-w-md bg-dark-950 h-full shadow-2xl flex flex-col border-l border-dark-800 animate-slide-left">
-            <div className="p-6 border-b border-dark-800 flex items-center justify-between bg-dark-900/50">
-              <h2 className="text-xl font-heading font-bold text-white flex items-center gap-2">
-                <svg className="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                Tu Carrito
-              </h2>
-              <button onClick={() => setCartOpen(false)} className="text-dark-400 hover:text-white p-2 rounded-full hover:bg-dark-800 transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-              </button>
-            </div>
-            
-            <div className="flex-1 overflow-y-auto p-6">
-              {cart.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full text-center opacity-50">
-                  <svg className="w-16 h-16 text-dark-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                  <p className="text-dark-300">Tu carrito está vacío</p>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  {cart.map((item) => (
-                    <div key={item.product.id} className="flex gap-4 bg-dark-900/30 p-3 rounded-2xl border border-dark-800/50">
-                      <div className="w-20 h-20 bg-dark-900 rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center p-2 border border-dark-800">
-                        {item.product.image ? (
-                          <img src={item.product.image} alt={item.product.name} className="w-full h-full object-contain" />
-                        ) : (
-                          <span className="text-xs text-dark-600">Sin foto</span>
-                        )}
-                      </div>
-                      <div className="flex-1 flex flex-col justify-between py-1">
-                        <div>
-                          <h4 className="text-white font-medium text-sm line-clamp-1">{item.product.name}</h4>
-                          <span className="text-gold-400 font-bold text-sm">${item.product.price.toLocaleString()}</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-3 bg-dark-900 rounded-lg px-2 py-1 border border-dark-800">
-                            <button 
-                              onClick={() => updateCartQuantity(item.product.id, -1)}
-                              className="text-dark-400 hover:text-white px-1"
-                            >-</button>
-                            <span className="text-white text-sm font-medium w-4 text-center">{item.quantity}</span>
-                            <button 
-                              onClick={() => updateCartQuantity(item.product.id, 1)}
-                              disabled={item.quantity >= item.product.stock}
-                              className="text-dark-400 hover:text-white px-1 disabled:opacity-30 disabled:cursor-not-allowed"
-                            >+</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {cart.length > 0 && (
-              <div className="p-6 border-t border-dark-800 bg-dark-900/80 backdrop-blur-md">
-                <div className="flex justify-between items-center mb-6">
-                  <span className="text-dark-300">Total a pagar</span>
-                  <span className="text-2xl font-bold text-gold-400">${cartTotal.toLocaleString()}</span>
-                </div>
-                <button 
-                  onClick={checkoutCart}
-                  className="w-full btn-gold text-dark-950 py-4 rounded-xl text-sm font-bold tracking-wider uppercase flex items-center justify-center gap-2"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
-                  Confirmar Pedido por WhatsApp
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
+

@@ -14,14 +14,14 @@ async function main() {
   await prisma.adminUser.deleteMany();
 
   // Create admin user
-  const hashedPassword = await bcrypt.hash('hairbona2024', 10);
+  const hashedPassword = await bcrypt.hash('vascoco2024', 10);
   await prisma.adminUser.create({
     data: {
       username: 'admin',
       password: hashedPassword,
     },
   });
-  console.log('✅ Admin user created (admin / hairbona2024)');
+  console.log('✅ Admin user created (admin / vascoco2024)');
 
   // Create SiteConfig
   await prisma.siteConfig.createMany({

@@ -80,53 +80,64 @@ function GlobalConfigForm() {
     });
   };
 
-  if (loading) return <div className="text-dark-500">Cargando configuración...</div>;
+  if (loading) return <div className="text-[var(--color-text-muted)]">Cargando configuración...</div>;
 
   return (
     <form onSubmit={handleSave} className="space-y-6">
       <div>
-        <label className="block text-sm text-dark-300 mb-1">WhatsApp (con código de país ej: +549...)</label>
+        <label className="block text-sm text-[var(--color-text-main)] mb-1">WhatsApp (con código de país ej: +549...)</label>
         <input 
           type="text" 
           value={config.whatsappNumber || ''} 
           onChange={(e) => setConfig({...config, whatsappNumber: e.target.value})}
-          className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2 text-white"
+          className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-white"
         />
       </div>
 
       <div>
-        <label className="block text-sm text-dark-300 mb-1">Subtítulo del Hero (texto debajo del título principal)</label>
+        <label className="block text-sm text-[var(--color-text-main)] mb-1">Dirección de la barbería (aparece en el mail de confirmación)</label>
+        <input 
+          type="text" 
+          value={config.address || ''} 
+          onChange={(e) => setConfig({...config, address: e.target.value})}
+          className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-white"
+          placeholder="Ej: San Juan 127, Junín de los Andes, Neuquén"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm text-[var(--color-text-main)] mb-1">Subtítulo del Hero (texto debajo del título principal)</label>
         <textarea 
           value={config.heroSubtitle || ''} 
           onChange={(e) => setConfig({...config, heroSubtitle: e.target.value})}
-          className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2 text-white resize-none"
+          className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-white resize-none"
           rows={3}
           placeholder="Tu barbería de confianza. Estilo, precisión y atención personalizada en cada visita."
         />
       </div>
 
       {/* Loyalty Program */}
-      <div className="border border-dark-700 rounded-xl p-5 space-y-4">
+      <div className="border border-[var(--color-border-subtle)] rounded-xl p-5 space-y-4">
         <h3 className="text-white font-semibold flex items-center gap-2">
           <span>🏆</span> Programa de Fidelidad
         </h3>
         <div>
-          <label className="block text-sm text-dark-300 mb-1">Visitas necesarias para ganar recompensa</label>
+          <label className="block text-sm text-[var(--color-text-main)] mb-1">Visitas necesarias para ganar recompensa</label>
           <input 
             type="number"
             min="1"
             max="100"
             value={config.loyaltyVisits || '10'} 
             onChange={(e) => setConfig({...config, loyaltyVisits: e.target.value})}
-            className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2 text-white"
+            className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-white"
           />
         </div>
         <div>
-          <label className="block text-sm text-dark-300 mb-1">Mensaje de recompensa (lo ve el cliente cuando la gana)</label>
+          <label className="block text-sm text-[var(--color-text-main)] mb-1">Mensaje de recompensa (lo ve el cliente cuando la gana)</label>
           <textarea 
             value={config.loyaltyMessage || ''} 
             onChange={(e) => setConfig({...config, loyaltyMessage: e.target.value})}
-            className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2 text-white resize-none"
+            className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-white resize-none"
             rows={3}
             placeholder="¡Felicitaciones! Ganaste una recompensa especial. Mostrá este mensaje en tu próxima visita."
           />
@@ -135,12 +146,12 @@ function GlobalConfigForm() {
 
       {/* Hero Image Upload */}
       <div>
-        <label className="block text-sm text-dark-300 mb-2">Imagen de Fondo (Hero)</label>
+        <label className="block text-sm text-[var(--color-text-main)] mb-2">Imagen de Fondo (Hero)</label>
         {config.heroImage ? (
-          <div className="relative rounded-xl overflow-hidden border border-dark-700">
+          <div className="relative rounded-xl overflow-hidden border border-[var(--color-border-subtle)]">
             <img src={config.heroImage} alt="Hero Background" className="w-full h-40 object-cover" />
             <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-              <label className="bg-gold-500 text-dark-950 px-4 py-2 rounded-lg text-sm font-bold cursor-pointer hover:bg-gold-400 transition-colors">
+              <label className="bg-accent-400 text-[var(--color-green-900)] px-4 py-2 rounded-lg text-sm font-bold cursor-pointer hover:bg-gold-400 transition-colors">
                 Cambiar
                 <input type="file" accept="image/*" onChange={handleHeroUpload} className="hidden" />
               </label>
@@ -154,15 +165,15 @@ function GlobalConfigForm() {
             </div>
           </div>
         ) : (
-          <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-dark-700 rounded-xl cursor-pointer hover:border-gold-500/50 transition-colors bg-dark-900">
+          <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[var(--color-border-subtle)] rounded-xl cursor-pointer hover:border-accent-400/50 transition-colors bg-[var(--color-bg-main)]">
             {uploading ? (
-              <div className="w-6 h-6 border-2 border-gold-500/30 border-t-gold-500 rounded-full animate-spin"></div>
+              <div className="w-6 h-6 border-2 border-accent-400/30 border-t-accent-400 rounded-full animate-spin"></div>
             ) : (
               <>
-                <svg className="w-8 h-8 text-dark-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-[var(--color-text-muted)] mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <span className="text-dark-500 text-sm">Tocá para subir una imagen</span>
+                <span className="text-[var(--color-text-muted)] text-sm">Tocá para subir una imagen</span>
               </>
             )}
             <input type="file" accept="image/*" onChange={handleHeroUpload} className="hidden" />
@@ -174,7 +185,7 @@ function GlobalConfigForm() {
         <button
           type="submit"
           disabled={saving}
-          className="btn-gold text-dark-950 px-6 py-2 rounded-lg text-sm font-bold disabled:opacity-50"
+          className="btn-gold text-[var(--color-ivory-200)] px-6 py-2 rounded-lg text-sm font-bold disabled:opacity-50"
         >
           {saving ? 'Guardando...' : 'Guardar Configuración'}
         </button>
@@ -290,7 +301,7 @@ export default function ConfiguracionPage() {
         {/* Global Config */}
         <section className="mb-12">
           <h2 className="text-xl font-heading font-bold text-white mb-4 flex items-center gap-2">
-            <svg className="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
@@ -304,7 +315,7 @@ export default function ConfiguracionPage() {
         {/* Current schedule */}
         <section className="mb-12">
           <h2 className="text-xl font-heading font-bold text-white mb-4 flex items-center gap-2">
-            <svg className="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -317,7 +328,7 @@ export default function ConfiguracionPage() {
 
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="w-8 h-8 border-2 border-gold-500/30 border-t-gold-500 rounded-full animate-spin"></div>
+              <div className="w-8 h-8 border-2 border-accent-400/30 border-t-accent-400 rounded-full animate-spin"></div>
             </div>
           ) : (
             <div className="space-y-2">
@@ -332,15 +343,15 @@ export default function ConfiguracionPage() {
                           {dayRules.map((rule) => (
                             <span
                               key={rule.id}
-                              className="px-3 py-1 rounded-lg bg-gold-500/10 text-gold-400 text-sm flex items-center gap-2"
+                              className="px-3 py-1 rounded-lg bg-accent-400/10 text-accent-400 text-sm flex items-center gap-2"
                             >
                               {rule.startTime} - {rule.endTime}
                               {rule.label && (
-                                <span className="text-dark-500 text-xs">({rule.label})</span>
+                                <span className="text-[var(--color-text-muted)] text-xs">({rule.label})</span>
                               )}
                               <button
                                 onClick={() => deleteRule(rule.id)}
-                                className="text-dark-500 hover:text-red-400 transition-colors"
+                                className="text-[var(--color-text-muted)] hover:text-red-400 transition-colors"
                               >
                                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path
@@ -355,7 +366,7 @@ export default function ConfiguracionPage() {
                           ))}
                         </div>
                       ) : (
-                        <span className="text-dark-500 text-sm">Cerrado</span>
+                        <span className="text-[var(--color-text-muted)] text-sm">Cerrado</span>
                       )}
                     </div>
                   </div>
@@ -386,7 +397,7 @@ export default function ConfiguracionPage() {
               {dateBlocks.map((block) => (
                 <div key={block.id} className="glass rounded-xl p-4 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <span className="px-2 py-0.5 rounded-md bg-red-500/10 text-red-400 text-xs font-semibold uppercase">
+                    <span className="px-2 py-0.5 rounded-xl bg-red-500/10 text-red-400 text-xs font-semibold uppercase">
                       Bloqueado
                     </span>
                     <span className="text-white text-sm">
@@ -395,12 +406,12 @@ export default function ConfiguracionPage() {
                         : `${dayNames[block.dayOfWeek!]} — ${block.startTime} a ${block.endTime}`}
                     </span>
                     {block.label && (
-                      <span className="text-dark-500 text-xs">({block.label})</span>
+                      <span className="text-[var(--color-text-muted)] text-xs">({block.label})</span>
                     )}
                   </div>
                   <button
                     onClick={() => deleteRule(block.id)}
-                    className="text-dark-500 hover:text-red-400 transition-colors"
+                    className="text-[var(--color-text-muted)] hover:text-red-400 transition-colors"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -420,7 +431,7 @@ export default function ConfiguracionPage() {
         {/* Add new rule/block */}
         <section>
           <h2 className="text-xl font-heading font-bold text-white mb-4 flex items-center gap-2">
-            <svg className="w-5 h-5 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
             Agregar Regla / Bloqueo
@@ -429,13 +440,13 @@ export default function ConfiguracionPage() {
           <form onSubmit={handleSubmit} className="glass rounded-2xl p-6 space-y-5">
             {/* Type toggle */}
             <div>
-              <label className="block text-sm text-dark-300 font-medium mb-2">Tipo</label>
+              <label className="block text-sm text-[var(--color-text-main)] font-medium mb-2">Tipo</label>
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => setIsBlock(true)}
                   className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                    isBlock ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'glass text-dark-400'
+                    isBlock ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'glass text-[var(--color-text-muted)]'
                   }`}
                 >
                   🚫 Bloquear Horario
@@ -444,7 +455,7 @@ export default function ConfiguracionPage() {
                   type="button"
                   onClick={() => setIsBlock(false)}
                   className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                    !isBlock ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'glass text-dark-400'
+                    !isBlock ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'glass text-[var(--color-text-muted)]'
                   }`}
                 >
                   ✅ Agregar Horario
@@ -454,13 +465,13 @@ export default function ConfiguracionPage() {
 
             {/* Apply to */}
             <div>
-              <label className="block text-sm text-dark-300 font-medium mb-2">Aplicar a</label>
+              <label className="block text-sm text-[var(--color-text-main)] font-medium mb-2">Aplicar a</label>
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => setBlockType('date')}
                   className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                    blockType === 'date' ? 'bg-gold-500/20 text-gold-400 border border-gold-500/30' : 'glass text-dark-400'
+                    blockType === 'date' ? 'bg-accent-400/20 text-accent-400 border border-accent-400/30' : 'glass text-[var(--color-text-muted)]'
                   }`}
                 >
                   Fecha específica
@@ -469,7 +480,7 @@ export default function ConfiguracionPage() {
                   type="button"
                   onClick={() => setBlockType('day')}
                   className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                    blockType === 'day' ? 'bg-gold-500/20 text-gold-400 border border-gold-500/30' : 'glass text-dark-400'
+                    blockType === 'day' ? 'bg-accent-400/20 text-accent-400 border border-accent-400/30' : 'glass text-[var(--color-text-muted)]'
                   }`}
                 >
                   Día de la semana
@@ -480,7 +491,7 @@ export default function ConfiguracionPage() {
             {/* Date or Day selector */}
             {blockType === 'date' ? (
               <div>
-                <label htmlFor="block-date" className="block text-sm text-dark-300 font-medium mb-1.5">
+                <label htmlFor="block-date" className="block text-sm text-[var(--color-text-main)] font-medium mb-1.5">
                   Fecha
                 </label>
                 <input
@@ -488,20 +499,20 @@ export default function ConfiguracionPage() {
                   type="date"
                   value={blockDate}
                   onChange={(e) => setBlockDate(e.target.value)}
-                  className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500/30 transition-all"
+                  className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent-400 focus:ring-1 focus:ring-accent-400/30 transition-all"
                   required
                 />
               </div>
             ) : (
               <div>
-                <label htmlFor="block-day" className="block text-sm text-dark-300 font-medium mb-1.5">
+                <label htmlFor="block-day" className="block text-sm text-[var(--color-text-main)] font-medium mb-1.5">
                   Día
                 </label>
                 <select
                   id="block-day"
                   value={blockDay}
                   onChange={(e) => setBlockDay(Number(e.target.value))}
-                  className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500/30 transition-all"
+                  className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent-400 focus:ring-1 focus:ring-accent-400/30 transition-all"
                 >
                   {[1, 2, 3, 4, 5, 6, 0].map((d) => (
                     <option key={d} value={d}>
@@ -515,7 +526,7 @@ export default function ConfiguracionPage() {
             {/* Time range */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="block-start" className="block text-sm text-dark-300 font-medium mb-1.5">
+                <label htmlFor="block-start" className="block text-sm text-[var(--color-text-main)] font-medium mb-1.5">
                   Desde
                 </label>
                 <input
@@ -523,12 +534,12 @@ export default function ConfiguracionPage() {
                   type="time"
                   value={blockStartTime}
                   onChange={(e) => setBlockStartTime(e.target.value)}
-                  className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500/30 transition-all"
+                  className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent-400 focus:ring-1 focus:ring-accent-400/30 transition-all"
                   required
                 />
               </div>
               <div>
-                <label htmlFor="block-end" className="block text-sm text-dark-300 font-medium mb-1.5">
+                <label htmlFor="block-end" className="block text-sm text-[var(--color-text-main)] font-medium mb-1.5">
                   Hasta
                 </label>
                 <input
@@ -536,7 +547,7 @@ export default function ConfiguracionPage() {
                   type="time"
                   value={blockEndTime}
                   onChange={(e) => setBlockEndTime(e.target.value)}
-                  className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500/30 transition-all"
+                  className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent-400 focus:ring-1 focus:ring-accent-400/30 transition-all"
                   required
                 />
               </div>
@@ -544,7 +555,7 @@ export default function ConfiguracionPage() {
 
             {/* Label */}
             <div>
-              <label htmlFor="block-label" className="block text-sm text-dark-300 font-medium mb-1.5">
+              <label htmlFor="block-label" className="block text-sm text-[var(--color-text-main)] font-medium mb-1.5">
                 Etiqueta (opcional)
               </label>
               <input
@@ -553,14 +564,14 @@ export default function ConfiguracionPage() {
                 value={blockLabel}
                 onChange={(e) => setBlockLabel(e.target.value)}
                 placeholder="Ej: Turno médico, Feriado, etc."
-                className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-3 text-white placeholder-dark-500 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500/30 transition-all"
+                className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-white placeholder-[var(--color-text-muted)] focus:outline-none focus:border-accent-400 focus:ring-1 focus:ring-accent-400/30 transition-all"
               />
             </div>
 
             <button
               type="submit"
               disabled={submitting}
-              className="w-full btn-gold text-dark-950 py-3.5 rounded-xl text-sm font-bold tracking-wider uppercase disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full btn-gold text-[var(--color-ivory-200)] py-3.5 rounded-xl text-sm font-bold tracking-wider uppercase disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {submitting ? (
                 <>

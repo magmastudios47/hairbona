@@ -200,7 +200,7 @@ export default function GananciasAdmin() {
         <h1 className="text-2xl font-heading font-bold text-white">Panel de Ganancias</h1>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="btn-gold text-dark-950 px-5 py-2.5 rounded-lg text-sm font-bold tracking-wide flex items-center gap-2"
+          className="btn-gold text-[var(--color-ivory-200)] px-5 py-2.5 rounded-lg text-sm font-bold tracking-wide flex items-center gap-2"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
           Ingreso Manual
@@ -208,15 +208,15 @@ export default function GananciasAdmin() {
       </div>
 
       {/* Tabs */}
-      <div className="flex bg-dark-900 rounded-xl p-1 mb-6 max-w-fit">
+      <div className="flex bg-[var(--color-bg-main)] rounded-xl p-1 mb-6 max-w-fit">
         {['day', 'week', 'month', 'all'].map((tab) => (
           <button
             key={tab}
             onClick={() => setPeriod(tab as any)}
             className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${
               period === tab
-                ? 'bg-gold-500 text-dark-950 shadow-lg'
-                : 'text-dark-400 hover:text-white'
+                ? 'bg-accent-400 text-[var(--color-green-900)] shadow-lg'
+                : 'text-[var(--color-text-muted)] hover:text-white'
             }`}
           >
             {tab === 'day' && 'Día'}
@@ -234,19 +234,19 @@ export default function GananciasAdmin() {
             type="date" 
             value={selectedDay}
             onChange={(e) => setSelectedDay(e.target.value)}
-            className="bg-dark-900 border border-dark-700 text-white rounded-lg px-4 py-2"
+            className="bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] text-white rounded-lg px-4 py-2"
           />
         </div>
       )}
 
       {/* Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <div className="glass px-6 py-5 rounded-2xl border border-gold-500/20 flex flex-col items-center justify-center">
-          <p className="text-dark-400 text-sm font-medium uppercase tracking-wider mb-2">Recaudación Total</p>
-          <p className="text-4xl font-bold text-gold-400">{formatMoney(totalEarnings)}</p>
+        <div className="glass px-6 py-5 rounded-2xl border border-accent-400/20 flex flex-col items-center justify-center">
+          <p className="text-[var(--color-text-muted)] text-sm font-medium uppercase tracking-wider mb-2">Recaudación Total</p>
+          <p className="text-4xl font-bold text-accent-400">{formatMoney(totalEarnings)}</p>
         </div>
-        <div className="glass px-6 py-5 rounded-2xl border border-dark-700 flex flex-col items-center justify-center">
-          <p className="text-dark-400 text-sm font-medium uppercase tracking-wider mb-2">Servicios Brindados</p>
+        <div className="glass px-6 py-5 rounded-2xl border border-[var(--color-border-subtle)] flex flex-col items-center justify-center">
+          <p className="text-[var(--color-text-muted)] text-sm font-medium uppercase tracking-wider mb-2">Servicios Brindados</p>
           <p className="text-4xl font-bold text-white">{totalAppointments}</p>
         </div>
       </div>
@@ -254,11 +254,11 @@ export default function GananciasAdmin() {
       {/* Content */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="w-8 h-8 border-2 border-gold-500/30 border-t-gold-500 rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-2 border-accent-400/30 border-t-accent-400 rounded-full animate-spin"></div>
         </div>
       ) : earnings.length === 0 || totalEarnings === 0 ? (
         <div className="glass rounded-2xl p-12 text-center">
-          <p className="text-dark-400 text-lg font-medium">Sin ingresos en este periodo</p>
+          <p className="text-[var(--color-text-muted)] text-lg font-medium">Sin ingresos en este periodo</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -294,16 +294,16 @@ export default function GananciasAdmin() {
           <div className="lg:col-span-2 space-y-6">
             {earnings.filter(e => e.totalEarnings > 0).map((barberData) => (
               <div key={barberData.barber.id} className="glass rounded-2xl p-6">
-                <div className="flex items-center justify-between mb-4 pb-4 border-b border-dark-800/50">
+                <div className="flex items-center justify-between mb-4 pb-4 border-b border-[var(--color-border-subtle)]">
                   <div className="flex items-center gap-4">
                     <img 
                       src={barberData.barber.photo || 'https://i.pravatar.cc/150'} 
                       alt={barberData.barber.name} 
-                      className="w-12 h-12 rounded-full object-cover border-2 border-dark-700"
+                      className="w-12 h-12 rounded-full object-cover border-2 border-[var(--color-border-subtle)]"
                     />
                     <div>
                       <h3 className="text-lg font-bold text-white">{barberData.barber.name}</h3>
-                      <p className="text-dark-400 text-xs">{barberData.appointmentsCount} servicios</p>
+                      <p className="text-[var(--color-text-muted)] text-xs">{barberData.appointmentsCount} servicios</p>
                     </div>
                   </div>
                   <div className="text-right">
@@ -313,23 +313,23 @@ export default function GananciasAdmin() {
 
                 <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                   {barberData.services.map((service, index) => (
-                    <div key={`${service.id}-${index}`} className="flex items-center justify-between p-3 rounded-lg bg-dark-900/50 border border-dark-800 text-sm">
+                    <div key={`${service.id}-${index}`} className="flex items-center justify-between p-3 rounded-lg bg-[var(--color-bg-main)]/50 border border-[var(--color-border-subtle)] text-sm">
                       <div>
                         <div className="flex items-center gap-2">
                           <p className="text-white font-medium">{service.name}</p>
-                          {service.isManual && <span className="bg-gold-500/20 text-gold-400 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">Manual</span>}
+                          {service.isManual && <span className="bg-accent-400/20 text-accent-400 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">Manual</span>}
                         </div>
-                        <p className="text-dark-500 text-xs mt-0.5">
+                        <p className="text-[var(--color-text-muted)] text-xs mt-0.5">
                           {period !== 'day' ? `${service.date} ` : ''} 
                           {service.time !== '-' ? `(${service.time})` : ''} - {service.customerName}
                         </p>
                       </div>
                       <div className="flex items-center gap-4">
-                        <p className="text-gold-400 font-semibold">{formatMoney(service.price)}</p>
+                        <p className="text-accent-400 font-semibold">{formatMoney(service.price)}</p>
                         {service.isManual && (
                           <button 
                             onClick={() => handleDeleteManual(service.id)}
-                            className="text-red-500 hover:text-red-400 p-1 rounded-md hover:bg-red-500/10 transition-colors"
+                            className="text-red-500 hover:text-red-400 p-1 rounded-xl hover:bg-red-500/10 transition-colors"
                             title="Eliminar ingreso"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -348,17 +348,17 @@ export default function GananciasAdmin() {
       {/* Manual Income Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
-          <div className="bg-dark-950 border border-dark-800 rounded-2xl p-6 w-full max-w-md">
+          <div className="bg-[var(--color-bg-main)] text-[var(--color-text-main)] border border-[var(--color-border-subtle)] rounded-2xl p-6 w-full max-w-md">
             <h2 className="text-xl font-bold text-white mb-6">Cargar Ingreso Manual</h2>
             <form onSubmit={handleManualSubmit} className="space-y-4">
               
               <div>
-                <label className="block text-sm text-dark-300 mb-1">Barbero *</label>
+                <label className="block text-sm text-[var(--color-text-main)] mb-1">Barbero *</label>
                 <select 
                   required
                   value={manualForm.barberId}
                   onChange={e => setManualForm({...manualForm, barberId: e.target.value})}
-                  className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2 text-white"
+                  className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-white"
                 >
                   <option value="">Seleccionar...</option>
                   {barbers.map(b => (
@@ -368,22 +368,22 @@ export default function GananciasAdmin() {
               </div>
 
               <div>
-                <label className="block text-sm text-dark-300 mb-1">Fecha *</label>
+                <label className="block text-sm text-[var(--color-text-main)] mb-1">Fecha *</label>
                 <input 
                   type="date"
                   required
                   value={manualForm.date}
                   onChange={e => setManualForm({...manualForm, date: e.target.value})}
-                  className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2 text-white"
+                  className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-white"
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-dark-300 mb-1">Vincular a Servicio (Opcional)</label>
+                <label className="block text-sm text-[var(--color-text-main)] mb-1">Vincular a Servicio (Opcional)</label>
                 <select 
                   value={manualForm.serviceId}
                   onChange={handleServiceSelect}
-                  className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2 text-white"
+                  className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-white"
                 >
                   <option value="">Ingreso Libre (Sin servicio)</option>
                   {services.map(s => (
@@ -393,26 +393,26 @@ export default function GananciasAdmin() {
               </div>
 
               <div>
-                <label className="block text-sm text-dark-300 mb-1">Monto ($) *</label>
+                <label className="block text-sm text-[var(--color-text-main)] mb-1">Monto ($) *</label>
                 <input 
                   type="number" 
                   required
                   step="0.01"
                   value={manualForm.amount}
                   onChange={e => setManualForm({...manualForm, amount: e.target.value})}
-                  className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2 text-white"
+                  className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-white"
                 />
               </div>
 
               {!manualForm.serviceId && (
                 <div>
-                  <label className="block text-sm text-dark-300 mb-1">Descripción / Concepto</label>
+                  <label className="block text-sm text-[var(--color-text-main)] mb-1">Descripción / Concepto</label>
                   <input 
                     type="text" 
                     placeholder="Ej: Venta de cera, Corte al paso..."
                     value={manualForm.description}
                     onChange={e => setManualForm({...manualForm, description: e.target.value})}
-                    className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2 text-white"
+                    className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-white"
                   />
                 </div>
               )}
@@ -421,14 +421,14 @@ export default function GananciasAdmin() {
                 <button 
                   type="button" 
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-dark-400 hover:text-white"
+                  className="px-4 py-2 text-[var(--color-text-muted)] hover:text-white"
                 >
                   Cancelar
                 </button>
                 <button 
                   type="submit" 
                   disabled={submitting}
-                  className="bg-gold-500 text-dark-950 font-bold px-6 py-2 rounded-xl"
+                  className="bg-accent-400 text-[var(--color-green-900)] font-bold px-6 py-2 rounded-xl"
                 >
                   {submitting ? 'Guardando...' : 'Guardar Ingreso'}
                 </button>

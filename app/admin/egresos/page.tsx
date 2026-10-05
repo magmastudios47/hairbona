@@ -90,21 +90,21 @@ export default function EgresosAdminPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-heading font-bold text-white">Egresos</h1>
-        <p className="text-dark-400 mt-1">Registrá los gastos del negocio</p>
+        <p className="text-[var(--color-text-muted)] mt-1">Registrá los gastos del negocio</p>
       </div>
 
       {/* Month/Year Filter */}
       <div className="glass rounded-2xl p-6 flex flex-wrap gap-4 items-center">
         <select value={selectedMonth} onChange={e => setSelectedMonth(Number(e.target.value))}
-          className="bg-dark-900 border border-dark-700 rounded-xl px-4 py-2 text-white">
+          className="bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-white">
           {monthNames.map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
         </select>
         <select value={selectedYear} onChange={e => setSelectedYear(Number(e.target.value))}
-          className="bg-dark-900 border border-dark-700 rounded-xl px-4 py-2 text-white">
+          className="bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-white">
           {[2024, 2025, 2026, 2027].map(y => <option key={y} value={y}>{y}</option>)}
         </select>
         <div className="ml-auto text-right">
-          <p className="text-dark-400 text-sm">Total egresos</p>
+          <p className="text-[var(--color-text-muted)] text-sm">Total egresos</p>
           <p className="text-2xl font-bold text-red-400">${total.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</p>
         </div>
       </div>
@@ -115,26 +115,26 @@ export default function EgresosAdminPage() {
           <h2 className="text-xl font-heading font-semibold text-white">Cargar Egreso</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm text-dark-400 mb-1">Descripción</label>
+              <label className="block text-sm text-[var(--color-text-muted)] mb-1">Descripción</label>
               <input type="text" value={description} onChange={e => setDescription(e.target.value)}
                 placeholder="Ej: Compra de cera, alquiler..." required
-                className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2.5 text-white placeholder-dark-600 focus:outline-none focus:border-gold-500" />
+                className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2.5 text-white placeholder-dark-600 focus:outline-none focus:border-accent-400" />
             </div>
             <div>
-              <label className="block text-sm text-dark-400 mb-1">Monto ($)</label>
+              <label className="block text-sm text-[var(--color-text-muted)] mb-1">Monto ($)</label>
               <input type="number" value={amount} onChange={e => setAmount(e.target.value)}
                 placeholder="0.00" step="0.01" min="0" required
-                className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2.5 text-white placeholder-dark-600 focus:outline-none focus:border-gold-500" />
+                className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2.5 text-white placeholder-dark-600 focus:outline-none focus:border-accent-400" />
             </div>
             <div>
-              <label className="block text-sm text-dark-400 mb-1">Fecha</label>
+              <label className="block text-sm text-[var(--color-text-muted)] mb-1">Fecha</label>
               <input type="date" value={date} onChange={e => setDate(e.target.value)} required
-                className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-gold-500" />
+                className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-accent-400" />
             </div>
             {error && <p className="text-red-400 text-sm">{error}</p>}
             {success && <p className="text-green-400 text-sm">{success}</p>}
             <button type="submit" disabled={saving}
-              className="w-full btn-gold text-dark-950 font-bold py-3 rounded-xl disabled:opacity-50">
+              className="w-full btn-gold text-[var(--color-ivory-200)] font-bold py-3 rounded-xl disabled:opacity-50">
               {saving ? 'Guardando...' : 'Registrar Egreso'}
             </button>
           </form>
@@ -153,7 +153,7 @@ export default function EgresosAdminPage() {
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-40 text-dark-500">
+            <div className="flex items-center justify-center h-40 text-[var(--color-text-muted)]">
               No hay egresos este mes
             </div>
           )}
@@ -162,29 +162,29 @@ export default function EgresosAdminPage() {
 
       {/* Expense List */}
       <div className="glass rounded-2xl overflow-hidden">
-        <div className="p-6 border-b border-dark-800">
+        <div className="p-6 border-b border-[var(--color-border-subtle)]">
           <h2 className="text-xl font-heading font-semibold text-white">
             {monthNames[selectedMonth - 1]} {selectedYear}
           </h2>
         </div>
         {loading ? (
-          <div className="p-8 text-center text-dark-500">Cargando...</div>
+          <div className="p-8 text-center text-[var(--color-text-muted)]">Cargando...</div>
         ) : expenses.length === 0 ? (
-          <div className="p-8 text-center text-dark-500">No hay egresos registrados este mes</div>
+          <div className="p-8 text-center text-[var(--color-text-muted)]">No hay egresos registrados este mes</div>
         ) : (
           <div className="divide-y divide-dark-800">
             {expenses.map(exp => (
-              <div key={exp.id} className="flex items-center justify-between px-6 py-4 hover:bg-dark-900/50 transition-colors">
+              <div key={exp.id} className="flex items-center justify-between px-6 py-4 hover:bg-[var(--color-bg-main)]/50 transition-colors">
                 <div>
                   <p className="text-white font-medium">{exp.description}</p>
-                  <p className="text-dark-500 text-sm">{exp.date}</p>
+                  <p className="text-[var(--color-text-muted)] text-sm">{exp.date}</p>
                 </div>
                 <div className="flex items-center gap-4">
                   <span className="text-red-400 font-semibold text-lg">
                     -${exp.amount.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                   </span>
                   <button onClick={() => handleDelete(exp.id)}
-                    className="text-dark-600 hover:text-red-400 transition-colors p-1">
+                    className="text-[var(--color-text-muted)] hover:text-red-400 transition-colors p-1">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>

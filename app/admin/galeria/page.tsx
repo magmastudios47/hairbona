@@ -138,7 +138,7 @@ export default function GaleriaAdmin() {
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="btn-gold text-dark-950 px-4 py-2 rounded-lg text-sm font-bold tracking-wide"
+            className="btn-gold text-[var(--color-ivory-200)] px-4 py-2 rounded-lg text-sm font-bold tracking-wide"
           >
             {uploading ? 'Subiendo...' : '+ Subir Fotos'}
           </button>
@@ -146,15 +146,15 @@ export default function GaleriaAdmin() {
       </div>
 
       {loading ? (
-        <div className="text-center py-10"><div className="w-8 h-8 border-2 border-gold-500/30 border-t-gold-500 rounded-full animate-spin mx-auto"></div></div>
+        <div className="text-center py-10"><div className="w-8 h-8 border-2 border-accent-400/30 border-t-accent-400 rounded-full animate-spin mx-auto"></div></div>
       ) : images.length === 0 ? (
-        <div className="glass rounded-2xl p-12 text-center text-dark-400">
+        <div className="glass rounded-2xl p-12 text-center text-[var(--color-text-muted)]">
           No hay fotos en la galería. Subí algunas para empezar.
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {images.map(img => (
-            <div key={img.id} className="relative group rounded-xl overflow-hidden aspect-square bg-dark-900 border border-dark-800">
+            <div key={img.id} className="relative group rounded-xl overflow-hidden aspect-square bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)]">
               <img src={img.url} alt="Gallery" className="w-full h-full object-cover" />
               <div className="absolute top-2 right-2">
                 <button 

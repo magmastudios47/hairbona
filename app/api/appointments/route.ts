@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-import { sendNotificationEmail } from '@/lib/email';
+import { sendNotificationEmail, sendCustomerEmail } from '@/lib/email';
+import { bookingConfirmationEmail, cancellationEmail } from '@/lib/email-templates';
 
 export async function POST(request: NextRequest) {
   try {
@@ -115,8 +116,28 @@ export async function POST(request: NextRequest) {
       <p><strong>Servicio:</strong> ${appointment.service.name}</p>
       <p><strong>Barbero:</strong> ${appointment.barber.name}</p>
     `;
-    // We await this to avoid Vercel killing the process before the email is sent
-    await sendNotificationEmail(emailSubject, emailBody);
+    // Branded confirmation email for the customer
+    let customerEmailPromise: Promise<unknown> = Promise.resolve();
+    if (customerEmail) {
+      const addressConfig = await prisma.siteConfig.findUnique({ where: { key: 'address' } }).catch(() => null);
+      const { subject, html } = bookingConfirmationEmail({
+        appointmentId: appointment.id,
+        customerName,
+        date,
+        startTime,
+        endTime,
+        serviceName: appointment.service.name,
+        duration: appointment.service.duration,
+        price: appointment.price ?? appointment.service.price ?? null,
+        barberName: appointment.barber.name,
+        barberPhoto: appointment.barber.photo,
+        address: addressConfig?.value,
+      });
+      customerEmailPromise = sendCustomerEmail(customerEmail, subject, html);
+    }
+
+    // We await these to avoid Vercel killing the process before the emails are sent
+    await Promise.all([sendNotificationEmail(emailSubject, emailBody), customerEmailPromise]);
 
     return NextResponse.json(appointment, { status: 201 });
   } catch (error) {
@@ -141,19 +162,32 @@ export async function PUT(request: NextRequest) {
       include: { service: true, barber: true }
     });
 
-    // Notify barber/owner
-    const [y, m, d] = appointment.date.split('-');
-    const emailSubject = `❌ Turno Cancelado: ${appointment.customerName}`;
-    const emailBody = `
-      <h2>Un turno ha sido cancelado por el cliente</h2>
-      <p><strong>Cliente:</strong> ${appointment.customerName}</p>
-      <p><strong>Teléfono:</strong> ${appointment.customerPhone}</p>
-      <p><strong>Fecha que era:</strong> ${d}/${m}/${y}</p>
-      <p><strong>Hora que era:</strong> ${appointment.startTime} hs</p>
-      <p><strong>Servicio:</strong> ${appointment.service.name}</p>
-      <p><strong>Barbero:</strong> ${appointment.barber.name}</p>
-    `;
-    await sendNotificationEmail(emailSubject, emailBody);
+    const emailData = {
+      appointmentId: appointment.id,
+      customerName: appointment.customerName,
+      customerPhone: appointment.customerPhone,
+      date: appointment.date,
+      startTime: appointment.startTime,
+      endTime: appointment.endTime,
+      serviceName: appointment.service.name,
+      duration: appointment.service.duration,
+      price: appointment.price,
+      barberName: appointment.barber.name,
+      barberPhoto: appointment.barber.photo,
+    } as any;
+
+    const { subject: ownerSubj, html: ownerHtml } = cancellationEmail(emailData, true);
+    
+    let customerPromise: Promise<unknown> = Promise.resolve();
+    if (appointment.customerEmail) {
+      const { subject: custSubj, html: custHtml } = cancellationEmail(emailData, false);
+      customerPromise = sendCustomerEmail(appointment.customerEmail, custSubj, custHtml);
+    }
+
+    await Promise.all([
+      sendNotificationEmail(ownerSubj, ownerHtml),
+      customerPromise
+    ]);
 
     return NextResponse.json(appointment);
   } catch (error) {

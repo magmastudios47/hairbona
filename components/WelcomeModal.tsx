@@ -12,7 +12,7 @@ export default function WelcomeModal() {
     if (status === 'loading') return;
 
     if (!session) {
-      const hasVisited = localStorage.getItem('hairbona_visited');
+      const hasVisited = localStorage.getItem('vascoco_visited');
       if (!hasVisited) {
         setShow(true);
       }
@@ -22,12 +22,12 @@ export default function WelcomeModal() {
   if (!show) return null;
 
   const handleGuest = () => {
-    localStorage.setItem('hairbona_visited', 'true');
+    localStorage.setItem('vascoco_visited', 'true');
     setShow(false);
   };
 
   const handleLogin = () => {
-    localStorage.setItem('hairbona_visited', 'true');
+    localStorage.setItem('vascoco_visited', 'true');
     signIn('google');
   };
 
@@ -37,22 +37,25 @@ export default function WelcomeModal() {
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       
       {/* Modal */}
-      <div className="relative glass rounded-3xl p-8 max-w-md w-full animate-fade-in-up border border-gold-500/20 shadow-2xl">
+      <div className="relative bg-green-950 rounded-sm p-8 max-w-md w-full animate-fade-in-up border border-accent-500/20 shadow-2xl">
         <div className="text-center">
-          <div className="w-20 h-20 mx-auto rounded-full bg-gold-500/10 flex items-center justify-center mb-6">
-            <svg className="w-10 h-10 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-20 h-20 mx-auto rounded-sm bg-gold-500/10 flex items-center justify-center mb-6">
+            <svg className="w-10 h-10 text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
           </div>
-          <h2 className="text-2xl font-heading font-bold text-white mb-2">¡Bienvenido a Hairbona!</h2>
-          <p className="text-dark-300 mb-8 text-sm">
+          <h2 className="text-2xl font-heading font-bold text-neutral-50 mb-2">¡Bienvenido a Vascoco!</h2>
+          <p className="text-ivory-300 mb-8 text-sm">
             Iniciá sesión para llevar el control de tus turnos, acumular visitas para el programa de fidelidad y dejar reseñas. También podés entrar como invitado.
           </p>
 
           <div className="space-y-4">
+            <p className="text-xs text-center text-ivory-300 font-medium">
+              Al ingresar a la página estás aceptando nuestros <a href="#terminos" onClick={() => setShow(false)} className="underline hover:text-accent-400">Términos y Condiciones</a>, nuestra <a href="#privacidad" onClick={() => setShow(false)} className="underline hover:text-accent-400">Política de Privacidad</a> y el uso de cookies.
+            </p>
             <button
               onClick={handleLogin}
-              className="w-full btn-gold text-dark-950 px-6 py-3.5 rounded-xl text-sm font-bold tracking-wider uppercase flex items-center justify-center gap-2"
+              className="w-full btn-solid text-dark-950 px-6 py-3.5 rounded-sm text-sm font-bold tracking-wider uppercase flex items-center justify-center gap-2"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -64,7 +67,7 @@ export default function WelcomeModal() {
             </button>
             <button
               onClick={handleGuest}
-              className="w-full bg-dark-900 hover:bg-dark-800 text-white border border-dark-700 px-6 py-3.5 rounded-xl text-sm font-bold transition-colors"
+              className="w-full bg-primary-900 hover:bg-primary-800 text-neutral-50 border border-dark-700 px-6 py-3.5 rounded-sm text-sm font-bold transition-colors"
             >
               Continuar como invitado
             </button>

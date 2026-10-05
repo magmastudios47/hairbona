@@ -10,10 +10,10 @@ export default function LoginGooglePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-dark-950 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[var(--color-bg-main)] text-[var(--color-text-main)] flex items-center justify-center px-4">
       <div className="text-center">
-        <div className="w-12 h-12 border-2 border-gold-500/30 border-t-gold-500 rounded-full animate-spin mx-auto mb-6"></div>
-        <p className="text-dark-400 text-sm">Redirigiendo al inicio de sesión con Google...</p>
+        <div className="w-12 h-12 border-2 border-accent-400/30 border-t-accent-400 rounded-full animate-spin mx-auto mb-6"></div>
+        <p className="text-[var(--color-text-muted)] text-sm">Redirigiendo al inicio de sesión con Google...</p>
       </div>
     </div>
   );

@@ -37,24 +37,24 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-dark-950 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[var(--color-bg-main)] text-[var(--color-text-main)] flex items-center justify-center px-4">
       {/* Background effects */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-gold-500/3 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/3 right-1/3 w-96 h-96 bg-gold-700/3 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-accent-400/5 rounded-lg blur-3xl"></div>
+        <div className="absolute bottom-1/3 right-1/3 w-96 h-96 bg-accent-400/5 rounded-lg blur-3xl"></div>
       </div>
 
       <div className="relative z-10 w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block">
-            <span className="text-3xl font-heading font-bold text-gold-gradient">HAIRBONA</span>
+            <span className="text-3xl font-heading font-bold heading-solid">VASCOCO</span>
           </Link>
-          <p className="text-dark-500 text-sm mt-2">Panel de Administración</p>
+          <p className="text-[var(--color-text-muted)] text-sm mt-2">Panel de Administración</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="glass rounded-2xl p-8 space-y-5">
+        <form onSubmit={handleSubmit} className="solid-card rounded-lg p-8 space-y-5">
           <div>
-            <label htmlFor="username" className="block text-sm text-dark-300 font-medium mb-1.5">
+            <label htmlFor="username" className="block text-sm text-[var(--color-text-main)] font-medium mb-1.5">
               Usuario
             </label>
             <input
@@ -63,13 +63,13 @@ export default function LoginPage() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="admin"
-              className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-3 text-white placeholder-dark-500 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500/30 transition-all"
+              className="w-full bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-lg px-4 py-3 text-[var(--color-text-main)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-accent-500 focus:ring-1 focus:ring-accent-400/30 transition-all"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm text-dark-300 font-medium mb-1.5">
+            <label htmlFor="password" className="block text-sm text-[var(--color-text-main)] font-medium mb-1.5">
               Contraseña
             </label>
             <div className="relative">
@@ -79,13 +79,13 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-dark-900 border border-dark-700 rounded-xl pl-4 pr-12 py-3 text-white placeholder-dark-500 focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500/30 transition-all"
+                className="w-full bg-[var(--color-surface)] border border-[var(--color-border-subtle)] rounded-lg pl-4 pr-12 py-3 text-[var(--color-text-main)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-accent-500 focus:ring-1 focus:ring-accent-400/30 transition-all"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-dark-400 hover:text-white transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] transition-colors"
               >
                 {showPassword ? (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,7 +102,7 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-700 text-sm">
               {error}
             </div>
           )}
@@ -110,11 +110,11 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full btn-gold text-dark-950 py-3.5 rounded-xl text-sm font-bold tracking-wider uppercase disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full btn-solid text-[var(--color-ivory-200)] py-3.5 rounded-lg text-sm font-bold tracking-wider uppercase disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {loading ? (
               <>
-                <div className="w-4 h-4 border-2 border-dark-950/30 border-t-dark-950 rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-dark-950/30 border-t-dark-950 rounded-lg animate-spin"></div>
                 Ingresando...
               </>
             ) : (

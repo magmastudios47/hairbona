@@ -29,5 +29,5 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET || 'hairbona-secret-key-change-in-production',
+  secret: process.env.NEXTAUTH_SECRET || 'vascoco-secret-key-change-in-production',
 };

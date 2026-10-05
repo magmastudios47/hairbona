@@ -155,51 +155,51 @@ export default function BarberosAdmin() {
             setEditingId('');
             setFormData({ active: true, order: barbers.length + 1 });
           }}
-          className="btn-gold text-dark-950 px-4 py-2 rounded-lg text-sm font-bold tracking-wide"
+          className="btn-gold text-[var(--color-ivory-200)] px-4 py-2 rounded-lg text-sm font-bold tracking-wide"
         >
           + Nuevo Barbero
         </button>
       </div>
 
       {editingId !== null && (
-        <div className="glass rounded-2xl p-6 mb-8 border border-gold-500/30">
+        <div className="glass rounded-2xl p-6 mb-8 border border-accent-400/30">
           <h2 className="text-xl font-heading font-bold text-white mb-4">
             {editingId === '' ? 'Nuevo Barbero' : 'Editar Barbero'}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-sm text-dark-300 mb-1">Nombre</label>
+              <label className="block text-sm text-[var(--color-text-main)] mb-1">Nombre</label>
               <input 
                 type="text" 
                 value={formData.name || ''} 
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
-                className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2 text-white"
+                className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-white"
               />
             </div>
             <div>
-              <label className="block text-sm text-dark-300 mb-1">WhatsApp (con código de país ej: +549...)</label>
+              <label className="block text-sm text-[var(--color-text-main)] mb-1">WhatsApp (con código de país ej: +549...)</label>
               <input 
                 type="text" 
                 value={formData.whatsapp || ''} 
                 onChange={(e) => setFormData({...formData, whatsapp: e.target.value})}
-                className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2 text-white"
+                className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-white"
               />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm text-dark-300 mb-1">Descripción</label>
+              <label className="block text-sm text-[var(--color-text-main)] mb-1">Descripción</label>
               <textarea 
                 value={formData.description || ''} 
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
-                className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2 text-white h-24"
+                className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-white h-24"
               />
             </div>
             <div>
-              <label className="block text-sm text-dark-300 mb-1">Orden de visualización</label>
+              <label className="block text-sm text-[var(--color-text-main)] mb-1">Orden de visualización</label>
               <input 
                 type="number" 
                 value={formData.order || 0} 
                 onChange={(e) => setFormData({...formData, order: parseInt(e.target.value)})}
-                className="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2 text-white"
+                className="w-full bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-white"
               />
             </div>
             <div className="flex flex-col justify-end">
@@ -208,16 +208,16 @@ export default function BarberosAdmin() {
                   type="checkbox" 
                   checked={formData.active !== false} 
                   onChange={(e) => setFormData({...formData, active: e.target.checked})}
-                  className="w-4 h-4 rounded bg-dark-900 border-dark-700 text-gold-500 focus:ring-gold-500"
+                  className="w-4 h-4 rounded bg-[var(--color-bg-main)] border-[var(--color-border-subtle)] text-accent-400 focus:ring-gold-500"
                 />
                 Activo (visible en la web)
               </label>
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm text-dark-300 mb-1">Foto</label>
+              <label className="block text-sm text-[var(--color-text-main)] mb-1">Foto</label>
               <div className="flex items-center gap-4">
                 {formData.photo && (
-                  <img src={formData.photo} alt="Preview" className="w-16 h-16 rounded-full object-cover border-2 border-dark-700" />
+                  <img src={formData.photo} alt="Preview" className="w-16 h-16 rounded-full object-cover border-2 border-[var(--color-border-subtle)]" />
                 )}
                 <input 
                   type="file" 
@@ -230,7 +230,7 @@ export default function BarberosAdmin() {
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
-                  className="px-4 py-2 bg-dark-800 text-white rounded-lg text-sm hover:bg-dark-700 transition-colors"
+                  className="px-4 py-2 bg-[var(--color-surface)] text-white rounded-lg text-sm hover:bg-[var(--color-border-subtle)] transition-colors"
                 >
                   {uploading ? 'Subiendo...' : 'Subir Foto'}
                 </button>
@@ -239,7 +239,7 @@ export default function BarberosAdmin() {
                   value={formData.photo || ''} 
                   onChange={(e) => setFormData({...formData, photo: e.target.value})}
                   placeholder="URL de la imagen"
-                  className="flex-1 bg-dark-900 border border-dark-700 rounded-xl px-4 py-2 text-white text-sm"
+                  className="flex-1 bg-[var(--color-bg-main)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-white text-sm"
                 />
               </div>
             </div>
@@ -247,13 +247,13 @@ export default function BarberosAdmin() {
           <div className="flex justify-end gap-2">
             <button
               onClick={() => { setEditingId(null); setFormData({}); }}
-              className="px-4 py-2 rounded-lg text-sm text-dark-400 hover:text-white"
+              className="px-4 py-2 rounded-lg text-sm text-[var(--color-text-muted)] hover:text-white"
             >
               Cancelar
             </button>
             <button
               onClick={handleSave}
-              className="px-4 py-2 bg-gold-500 text-dark-950 rounded-lg text-sm font-bold"
+              className="px-4 py-2 bg-accent-400 text-[var(--color-green-900)] rounded-lg text-sm font-bold"
             >
               Guardar
             </button>
@@ -262,7 +262,7 @@ export default function BarberosAdmin() {
       )}
 
       {loading ? (
-        <div className="text-center py-10"><div className="w-8 h-8 border-2 border-gold-500/30 border-t-gold-500 rounded-full animate-spin mx-auto"></div></div>
+        <div className="text-center py-10"><div className="w-8 h-8 border-2 border-accent-400/30 border-t-accent-400 rounded-full animate-spin mx-auto"></div></div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {barbers.map(barber => (
@@ -271,10 +271,10 @@ export default function BarberosAdmin() {
                 <img src={barber.photo || 'https://i.pravatar.cc/150'} alt={barber.name} className="w-16 h-16 rounded-full object-cover" />
                 <div>
                   <h3 className="text-white font-bold text-lg">{barber.name}</h3>
-                  <span className="text-xs text-dark-400">Orden: {barber.order}</span>
+                  <span className="text-xs text-[var(--color-text-muted)]">Orden: {barber.order}</span>
                 </div>
               </div>
-              <p className="text-dark-400 text-sm mb-4 line-clamp-2">{barber.description}</p>
+              <p className="text-[var(--color-text-muted)] text-sm mb-4 line-clamp-2">{barber.description}</p>
               
               <div className="flex items-center justify-between mt-auto">
                 <span className={`text-xs px-2 py-1 rounded ${barber.active ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
@@ -283,13 +283,13 @@ export default function BarberosAdmin() {
                 <div className="flex gap-2">
                   <button 
                     onClick={() => { setEditingId(barber.id); setFormData(barber); }}
-                    className="p-2 rounded bg-dark-800 text-dark-300 hover:text-gold-400"
+                    className="p-2 rounded bg-[var(--color-surface)] text-[var(--color-text-main)] hover:text-accent-400"
                   >
                     Editar
                   </button>
                   <button 
                     onClick={() => handleDelete(barber.id)}
-                    className="p-2 rounded bg-dark-800 text-dark-300 hover:text-red-400"
+                    className="p-2 rounded bg-[var(--color-surface)] text-[var(--color-text-main)] hover:text-red-400"
                   >
                     Borrar
                   </button>
