@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat, Playfair_Display } from "next/font/google";
 import { Providers } from "./providers";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -50,7 +51,10 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${montserrat.variable} ${playfair.variable}`}>
       <body className="bg-[var(--color-bg-main)] text-[var(--color-text-main)] font-body antialiased">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <WhatsAppButton />
+        </Providers>
       </body>
     </html>
   );
