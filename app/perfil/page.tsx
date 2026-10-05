@@ -75,7 +75,7 @@ export default function PerfilPage() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-dark-950 flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--color-green-950)] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-gold-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -83,7 +83,7 @@ export default function PerfilPage() {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-dark-950 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[var(--color-green-950)] flex items-center justify-center px-4">
         <div className="text-center max-w-md animate-fade-in-up">
           <div className="w-20 h-20 rounded-full bg-gold-500/10 flex items-center justify-center mx-auto mb-6">
             <svg className="w-10 h-10 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,7 +122,7 @@ export default function PerfilPage() {
   const pastAppointments = profileData?.appointments?.filter(a => a.status !== 'confirmed') || [];
 
   return (
-    <div className="min-h-screen bg-dark-950">
+    <div className="min-h-screen bg-[var(--color-green-950)]">
       {/* Header */}
       <nav className="glass py-4 sticky top-0 z-50 border-b border-dark-800/50">
         <div className="max-w-3xl mx-auto px-4 flex items-center justify-between">

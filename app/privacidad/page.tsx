@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function PrivacidadPage() {
   return (
-    <div className="min-h-screen bg-dark-950">
+    <div className="min-h-screen bg-[var(--color-green-950)]">
       <nav className="glass py-4 border-b border-[var(--color-border-subtle)]/50">
         <div className="max-w-4xl mx-auto px-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
