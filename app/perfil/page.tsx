@@ -128,7 +128,7 @@ export default function PerfilPage() {
         <div className="max-w-3xl mx-auto px-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <img src="/images/logo.jpg" alt="Vascoco" className="h-8 w-auto rounded-full" />
-            <span className="text-xl font-heading font-bold text-text-accent-400 hidden sm:block">VASCOCO</span>
+            <span className="text-xl font-heading font-bold text-[var(--color-ivory-200)] hidden sm:block">VASCOCO</span>
           </Link>
           <button onClick={() => signOut({ callbackUrl: '/' })}
             className="text-[var(--color-ivory-300)] opacity-80 hover:text-white transition-colors text-sm">
