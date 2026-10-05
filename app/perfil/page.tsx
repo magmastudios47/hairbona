@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { useEffect, useState } from 'react';
@@ -55,7 +55,7 @@ export default function PerfilPage() {
   }, [session]);
 
   const handleCancelAppointment = async (id: string) => {
-    if (!confirm('¿Estás seguro de que querés cancelar este turno?')) return;
+    if (!confirm('Â¿EstÃ¡s seguro de que querÃ©s cancelar este turno?')) return;
     try {
       const res = await fetch(`/api/appointments`, { // we need a cancel endpoint for users, wait we can just use the public one if we create it, or use the delete endpoint? Oh wait, the admin endpoint requires admin session! I will create a public cancel endpoint. Wait, actually we can just pass the appointment ID to a new endpoint `/api/appointments/cancel` with the ID. 
         method: 'PUT',
@@ -91,7 +91,7 @@ export default function PerfilPage() {
             </svg>
           </div>
           <h1 className="text-3xl font-heading font-bold text-[var(--color-text-main)] mb-3">Mi Perfil</h1>
-          <p className="text-[var(--color-text-muted)] mb-8">Iniciá sesión con Google para ver tu historial de visitas, turnos y recompensas.</p>
+          <p className="text-[var(--color-text-muted)] mb-8">IniciÃ¡ sesiÃ³n con Google para ver tu historial de visitas, turnos y recompensas.</p>
           <button
             onClick={() => signIn('google')}
             className="btn-solid text-[var(--color-ivory-200)] px-8 py-3.5 rounded-lg text-sm font-bold tracking-wider uppercase flex items-center gap-2 mx-auto"
@@ -102,7 +102,7 @@ export default function PerfilPage() {
               <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
               <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            Iniciar sesión con Google
+            Iniciar sesiÃ³n con Google
           </button>
           <Link href="/" className="block mt-4 text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] transition-colors text-sm">
             Volver al inicio
@@ -132,7 +132,7 @@ export default function PerfilPage() {
           </Link>
           <button onClick={() => signOut({ callbackUrl: '/' })}
             className="text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] transition-colors text-sm">
-            Cerrar sesión
+            Cerrar sesiÃ³n
           </button>
         </div>
       </nav>
@@ -158,8 +158,8 @@ export default function PerfilPage() {
         {hasReward ? (
           <div className="solid-card rounded-lg p-6 border border-accent-500/40  animate-fade-in-up">
             <div className="flex items-center gap-3 mb-3">
-              <span className="text-3xl">🏆</span>
-              <h2 className="text-xl font-heading font-bold text-accent-600">¡Recompensa Disponible!</h2>
+              <span className="text-3xl">ðŸ†</span>
+              <h2 className="text-xl font-heading font-bold text-accent-600">Â¡Recompensa Disponible!</h2>
             </div>
             <p className="text-[var(--color-text-main)]">{profileData?.loyaltyMessage}</p>
           </div>
@@ -170,75 +170,61 @@ export default function PerfilPage() {
               <span className="text-[var(--color-text-muted)] text-sm">{visitsInCycle}/{loyaltyVisits} visitas</span>
             </div>
             <div className="w-full bg-[var(--color-surface)] hover:bg-[var(--color-bg-main)] rounded-lg h-3 overflow-hidden">
-              <div className="h-3 rounded-lg bg-gradient-to-r from-gold-600 to-gold-400 transition-all duration-700"
+              <div className="h-3 rounded-lg bg-gradient-to-r from-accent-600 to-accent-400 transition-all duration-700"
                 style={{ width: `${progress}%` }} />
             </div>
             <p className="text-[var(--color-text-muted)] text-sm mt-2">
-              {loyaltyVisits - visitsInCycle} visita{(loyaltyVisits - visitsInCycle) !== 1 ? 's' : ''} más para tu próxima recompensa
+              {loyaltyVisits - visitsInCycle} visita{(loyaltyVisits - visitsInCycle) !== 1 ? 's' : ''} mÃ¡s para tu prÃ³xima recompensa
             </p>
           </div>
         )}
 
-        {/* Pending Appointments */}
-        {pendingAppointments.length > 0 && (
+        {/* Appointments List */}
           <div className="solid-card rounded-lg overflow-hidden animate-fade-in-up">
-            <div className="px-6 py-4 border-b border-[var(--color-border-subtle)] bg-accent-400/10">
-              <h2 className="text-lg font-heading font-semibold text-[var(--color-text-main)]">Turnos Pendientes</h2>
+            <div className="px-6 py-4 border-b border-[var(--color-border-subtle)] bg-accent-400/5">
+              <h2 className="text-lg font-heading font-semibold text-[var(--color-text-main)]">Tus Turnos</h2>
             </div>
-            <div className="divide-y divide-dark-800">
-              {pendingAppointments.map(appt => (
-                <div key={appt.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4">
-                  <div className="flex-1">
-                    <p className="text-[var(--color-text-main)] font-medium text-lg">{appt.service.name}</p>
-                    <p className="text-accent-600 text-sm font-semibold">{formatDate(appt.date)} a las {appt.startTime} hs</p>
-                    <p className="text-[var(--color-text-muted)] text-sm mt-1">Con {appt.barber.name}</p>
+            {loading ? (
+              <div className="p-8 text-center text-[var(--color-text-muted)]">Cargando...</div>
+            ) : profileData?.appointments?.length === 0 ? (
+              <div className="p-8 text-center text-[var(--color-text-muted)]">
+                <p>Aún no tenés turnos registrados.</p>
+                <Link href="/reservar" className="text-accent-600 font-medium hover:underline mt-2 inline-block">Reservar un turno →</Link>
+              </div>
+            ) : (
+              <div className="divide-y divide-[var(--color-border-subtle)]">
+                {(profileData?.appointments || []).map(appt => (
+                  <div key={appt.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4 hover:bg-[var(--color-bg-main)] transition-colors">
+                    <div className="flex-1">
+                      <p className="text-[var(--color-text-main)] font-medium text-lg">{appt.service.name}</p>
+                      <p className="text-[var(--color-text-muted)] text-sm">{formatDate(appt.date)} a las {appt.startTime} hs</p>
+                      <p className="text-[var(--color-text-muted)] text-sm">Con {appt.barber.name}</p>
+                    </div>
+                    <div className="flex items-center gap-3 self-start sm:self-center">
+                      <span className={`text-xs px-3 py-1.5 rounded-lg font-bold uppercase tracking-wider ${
+                        appt.status === "confirmed" ? "bg-accent-400/20 text-accent-400 border border-accent-400/30" :
+                        appt.status === "completed" ? "bg-green-500/10 text-green-500 border border-green-500/30" :
+                        appt.status === "cancelled" ? "bg-red-500/10 text-red-500 border border-red-500/30" :
+                        "bg-[var(--color-border-subtle)] text-[var(--color-text-main)]"
+                      }`}>
+                        {appt.status === "confirmed" ? "Pendiente" : appt.status === "completed" ? "Completado" : appt.status === "cancelled" ? "Cancelado" : appt.status}
+                      </span>
+                      {appt.status === "confirmed" && (
+                        <button onClick={() => handleCancelAppointment(appt.id)}
+                          className="text-red-500 hover:text-red-400 transition-colors text-xs font-bold uppercase tracking-wider border border-red-500/30 rounded-lg px-3 py-1.5 hover:bg-red-500/10">
+                          Cancelar
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  <button onClick={() => handleCancelAppointment(appt.id)}
-                    className="text-red-700 hover:text-red-800 transition-colors text-sm font-medium border border-red-500/30 rounded-lg px-4 py-2 hover:bg-red-500/10 self-start sm:self-center">
-                    Cancelar Turno
-                  </button>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-
-        {/* Past Appointments (History) */}
-        <div className="solid-card rounded-lg overflow-hidden animate-fade-in-up">
-          <div className="px-6 py-4 border-b border-[var(--color-border-subtle)]">
-            <h2 className="text-lg font-heading font-semibold text-[var(--color-text-main)]">Historial de Turnos</h2>
-          </div>
-          {loading ? (
-            <div className="p-8 text-center text-[var(--color-text-muted)]">Cargando...</div>
-          ) : pastAppointments.length === 0 ? (
-            <div className="p-8 text-center text-[var(--color-text-muted)]">
-              <p>Aún no tenés historial de turnos.</p>
-              <Link href="/reservar" className="text-accent-600 font-medium hover:underline mt-2 inline-block">Reservar un turno →</Link>
-            </div>
-          ) : (
-            <div className="divide-y divide-dark-800">
-              {pastAppointments.map(appt => (
-                <div key={appt.id} className="flex items-center justify-between gap-4 px-6 py-4">
-                  <div className="flex-1">
-                    <p className="text-[var(--color-text-main)] font-medium">{appt.service.name}</p>
-                    <p className="text-[var(--color-text-muted)] text-sm">{formatDate(appt.date)} · {appt.startTime} hs</p>
-                    <p className="text-[var(--color-text-muted)] text-sm">Con {appt.barber.name}</p>
-                  </div>
-                  <div>
-                    <span className={`text-xs px-2.5 py-1 rounded-lg font-medium ${
-                      appt.status === 'completed' ? 'bg-green-500/10 text-green-700' :
-                      appt.status === 'cancelled' ? 'bg-red-500/10 text-red-700' :
-                      'bg-[var(--color-border-subtle)] text-[var(--color-text-main)]'
-                    }`}>
-                      {appt.status === 'completed' ? 'Completado' : appt.status === 'cancelled' ? 'Cancelado' : appt.status}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );
 }
+
+
+

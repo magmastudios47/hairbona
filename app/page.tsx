@@ -239,10 +239,14 @@ export default function HomePage() {
             <Link href="/reservar" onClick={() => setMenuOpen(false)} className="btn-cta px-4 py-3 mt-2 text-center">
               Reservar Turno
             </Link>
-            {!session && (
+            {!session ? (
               <button onClick={() => { signIn('google'); setMenuOpen(false); }} className="text-left mt-2">
                 Entrar con Google
               </button>
+            ) : (
+              <Link href="/perfil" onClick={() => setMenuOpen(false)} className="text-left mt-2 text-accent-400 hover:text-accent-300">
+                Mi Perfil
+              </Link>
             )}
           </div>
         )}
@@ -335,11 +339,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-70">
-          <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-[var(--color-green-900)]">Scroll</span>
-          <div className="w-[1px] h-12 bg-gradient-to-b from-[var(--color-green-900)] to-transparent"></div>
-        </div>
       </section>
 
       {/* Services Section */}

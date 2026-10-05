@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 @theme {
   /* Green Palette (Primary Brand) */
@@ -17,7 +17,7 @@
   /* Action / CTA */
   --color-accent-400: #C6A664; /* Subtle Gold */
   --color-accent-500: #b09153;
-  --color-accent-600: #8B6B2E; /* Deep Gold — legible gold text on light backgrounds */
+  --color-accent-600: #8B6B2E; /* Deep Gold â€” legible gold text on light backgrounds */
   --color-mint-400: #2ECC71; /* Modern Mint */
 
   /* Neutrals (Backgrounds & Text) */
@@ -43,11 +43,12 @@ body {
 }
 
 .admin-theme {
+  --color-border-subtle: rgba(198, 166, 100, 0.35);
   --color-bg-main: var(--color-green-950);
   --color-surface: var(--color-green-900);
   --color-text-main: var(--color-ivory-200);
   --color-text-muted: var(--color-ivory-300);
-  --color-border-subtle: rgba(244, 239, 230, 0.1);
+  --color-border-subtle: rgba(198, 166, 100, 0.25);
 }
 
 /* Custom scrollbar */
@@ -143,12 +144,12 @@ body {
   letter-spacing: -0.01em;
 }
 
-/* On dark admin surfaces the green heading disappears — use gold instead */
+/* On dark admin surfaces the green heading disappears â€” use gold instead */
 .admin-theme .heading-solid {
   color: var(--color-accent-400);
 }
 
-/* On dark admin surfaces the green heading disappears — use gold instead */
+/* On dark admin surfaces the green heading disappears â€” use gold instead */
 .admin-theme .heading-solid {
   color: var(--color-accent-400);
 }
@@ -201,3 +202,8 @@ body {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
+
+.admin-theme .solid-card, .admin-theme .glass, .admin-theme input, .admin-theme select, .admin-theme textarea {
+  border: 1px solid rgba(198, 166, 100, 0.5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
